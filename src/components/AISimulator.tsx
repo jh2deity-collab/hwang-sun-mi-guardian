@@ -15,6 +15,8 @@ import {
     ChevronRight,
     Sparkles
 } from "lucide-react";
+import { simulateAssetGrowth } from "@/lib/calculator";
+import LeadMagnet from "./LeadMagnet";
 
 type SimStep = "intro" | "data" | "concerns" | "analysis" | "result";
 
@@ -29,6 +31,17 @@ export default function AISimulator() {
     });
 
     const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [simulationResult, setSimulationResult] = useState<{
+        finalBalance: number;
+        history: { year: number; balance: number }[];
+    } | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalTitle, setModalTitle] = useState("AI 맞춤 자산 관리 상담");
+
+    const openModalWithTitle = (title: string) => {
+        setModalTitle(title);
+        setIsModalOpen(true);
+    };
 
     // AI Feedback Logic based on data
     const aiInsight = useMemo(() => {
@@ -41,6 +54,12 @@ export default function AISimulator() {
     const handleNext = (nextStep: SimStep) => {
         if (nextStep === "analysis") {
             setIsAnalyzing(true);
+
+            // 시뮬레이션 실행 (연 수익률 6% 가정)
+            const years = data.targetAge - data.age;
+            const res = simulateAssetGrowth(data.currentAssets, data.monthlySaving * 12, 6, years);
+            setSimulationResult(res);
+
             setTimeout(() => {
                 setIsAnalyzing(false);
                 setStep("result");
@@ -52,6 +71,108 @@ export default function AISimulator() {
     const formatKRW = (val: number) => {
         if (val >= 100000000) return `${(val / 100000000).toFixed(1)}억 원`;
         return `${(val / 10000).toLocaleString()}만 원`;
+    };
+
+    // 프리미엄 SVG 차트 렌더러
+    const AssetChart = ({ history }: { history: { year: number; balance: number }[] }) => {
+        const padding = 40;
+        const width = 400;
+        const height = 200;
+
+        const maxBalance = Math.max(...history.map(h => h.balance));
+        const minBalance = Math.min(...history.map(h => h.balance));
+        const range = maxBalance - minBalance;
+
+        const points = history.map((h, i) => {
+            const x = padding + (i / (history.length - 1)) * (width - padding * 2);
+            const y = (height - padding) - ((h.balance - minBalance) / range) * (height - padding * 2);
+            return `${x},${y}`;
+        }).join(" ");
+
+        const areaPoints = ` ${padding},${height - padding} ${points} ${width - padding},${height - padding}`;
+
+        return (
+            <div className="w-full bg-slate-50/50 rounded-2xl p-4 border border-slate-100 shadow-inner overflow-hidden">
+                <div className="flex justify-between items-center mb-4">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Asset Growth Projection</span>
+                    <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                        <span className="text-[10px] font-bold text-accent">Real-time AI Analysis</span>
+                    </div>
+                </div>
+                <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto drop-shadow-lg">
+                    {/* Grid Lines */}
+                    {[0, 1, 2, 3].map(i => (
+                        <line
+                            key={i}
+                            x1={padding}
+                            y1={padding + (i * (height - padding * 2) / 3)}
+                            x2={width - padding}
+                            y2={padding + (i * (height - padding * 2) / 3)}
+                            stroke="#e2e8f0"
+                            strokeWidth="0.5"
+                            strokeDasharray="4 4"
+                        />
+                    ))}
+
+                    {/* Area Gradient */}
+                    <defs>
+                        <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#d4af37" stopOpacity="0.4" />
+                            <stop offset="100%" stopColor="#d4af37" stopOpacity="0" />
+                        </linearGradient>
+                    </defs>
+
+                    <motion.polyline
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 1 }}
+                        points={areaPoints}
+                        fill="url(#chartGradient)"
+                    />
+
+                    {/* Line Animation */}
+                    <motion.polyline
+                        fill="none"
+                        stroke="#d4af37"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        points={points}
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
+                        transition={{ duration: 2, ease: "easeInOut" }}
+                    />
+
+                    {/* Points */}
+                    {history.map((h, i) => {
+                        if (i === 0 || i === history.length - 1) {
+                            const x = padding + (i / (history.length - 1)) * (width - padding * 2);
+                            const y = (height - padding) - ((h.balance - minBalance) / range) * (height - padding * 2);
+                            return (
+                                <motion.circle
+                                    key={i}
+                                    cx={x}
+                                    cy={y}
+                                    r="4"
+                                    fill={i === 0 ? "#1e293b" : "#d4af37"}
+                                    stroke="white"
+                                    strokeWidth="2"
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: 1.5 + (i * 0.1) }}
+                                />
+                            );
+                        }
+                        return null;
+                    })}
+                </svg>
+                <div className="flex justify-between mt-2 px-6">
+                    <span className="text-[9px] font-bold text-slate-400">{data.age}세 (현재)</span>
+                    <span className="text-[9px] font-bold text-slate-400">{data.targetAge}세 (목표)</span>
+                </div>
+            </div>
+        );
     };
 
     return (
@@ -105,7 +226,9 @@ export default function AISimulator() {
                                         <Brain className="w-12 h-12" />
                                     </div>
                                     <div className="space-y-4 max-w-2xl">
-                                        <h3 className="text-3xl font-serif font-black text-primary">미래를 위한 AI 개인화 진단</h3>
+                                        <h3 className="text-3xl font-serif font-black text-primary">
+                                            <span className="text-[1.2em]">당신의 금융 <span className="text-accent italic">정체성</span> 은<br />무엇입니까?</span>
+                                        </h3>
                                         <p className="text-lg md:text-xl text-primary/80 font-semibold leading-relaxed">
                                             황선미 설계사의 자산 관리 철학과 최신 금융 데이터를 실시간으로 결합하여, <br className="hidden md:block" />
                                             오직 당신만을 위한 재무 시뮬레이션을 시작합니다.
@@ -113,9 +236,9 @@ export default function AISimulator() {
                                     </div>
                                     <button
                                         onClick={() => handleNext("data")}
-                                        className="btn-premium btn-premium-primary px-12 py-5"
+                                        className="btn-premium btn-premium-primary px-12 py-5 text-base"
                                     >
-                                        시작하기
+                                        <span className="text-[1.2em]">시작하기</span>
                                         <ArrowRight className="w-4 h-4" />
                                     </button>
                                 </motion.div>
@@ -194,9 +317,12 @@ export default function AISimulator() {
                                                     <div className="flex items-center gap-3 border-b-2 border-primary/10 focus-within:border-accent transition-colors pb-4 mb-4">
                                                         <span className="text-3xl font-black text-primary/20 group-focus-within:text-accent transition-colors">₩</span>
                                                         <input
-                                                            type="number"
-                                                            value={data.currentAssets}
-                                                            onChange={(e) => setData({ ...data, currentAssets: Number(e.target.value) })}
+                                                            type="text"
+                                                            value={data.currentAssets.toLocaleString()}
+                                                            onChange={(e) => {
+                                                                const val = e.target.value.replace(/[^0-9]/g, "");
+                                                                setData({ ...data, currentAssets: Number(val) });
+                                                            }}
                                                             className="w-full bg-transparent text-4xl font-black text-primary outline-none"
                                                         />
                                                     </div>
@@ -327,7 +453,7 @@ export default function AISimulator() {
                             )}
 
                             {/* 5. Result Step */}
-                            {step === "result" && (
+                            {step === "result" && simulationResult && (
                                 <motion.div
                                     key="result"
                                     initial={{ opacity: 0, scale: 0.95 }}
@@ -342,13 +468,17 @@ export default function AISimulator() {
                                             </div>
 
                                             <div className="p-8 bg-ivory rounded-[2.5rem] border border-primary/5 space-y-6">
-                                                <div className="flex justify-between items-end border-b border-accet/10 pb-4">
-                                                    <span className="text-xs font-bold text-primary/40">목표 시점 자산</span>
-                                                    <span className="text-3xl font-black text-primary">{formatKRW(data.currentAssets + (data.monthlySaving * (data.targetAge - data.age) * 12))}*</span>
+                                                <div className="flex justify-between items-end border-b border-accent/10 pb-4">
+                                                    <span className="text-xs font-bold text-primary/40">목표 시점 자산 (복리 6% 적용)</span>
+                                                    <span className="text-3xl font-black text-primary">{formatKRW(simulationResult.finalBalance)}*</span>
                                                 </div>
+
+                                                {/* Asset Chart Inserted Here */}
+                                                <AssetChart history={simulationResult.history} />
+
                                                 <div className="space-y-4">
                                                     <p className="text-[11px] font-bold text-primary/60 leading-relaxed italic">
-                                                        "위 수치는 단순 합산이며, 복리 효과와 절세 전략이 반영되지 않은 최소값입니다. <br />황선미 가디언과 함께라면 더 높은 가치를 실현할 수 있습니다."
+                                                        "위 수치는 연평균 수익률 6%를 가정하여 복리 효과를 반영한 결과입니다. <br />황선미 가디언의 맞춤 절세 전략이 결합되면 실질 수령액은 더 높아질 수 있습니다."
                                                     </p>
                                                 </div>
                                             </div>
@@ -372,8 +502,11 @@ export default function AISimulator() {
                                                     <h5 className="text-xl font-serif font-bold leading-tight">상세 리포트 <br />무료 신청하기</h5>
                                                     <p className="text-[10px] text-white/50 leading-relaxed font-medium">당신의 데이터를 기반으로 한 15페이지 분량의 상세 PDF 분석서를 보내드립니다.</p>
                                                 </div>
-                                                <button className="mt-6 w-full py-4 bg-white text-primary text-[11px] font-black rounded-2xl hover:bg-accent hover:text-white transition-all transform hover:-translate-y-1">
-                                                    PDF 리포트 받기
+                                                <button
+                                                    onClick={() => openModalWithTitle("AI 정밀 자산 리포트")}
+                                                    className="mt-6 w-full py-4 bg-white text-primary text-[11px] font-black rounded-2xl hover:bg-accent hover:text-white transition-all transform hover:-translate-y-1"
+                                                >
+                                                    <span className="text-[1.2em]">PDF 리포트 받기</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -387,8 +520,11 @@ export default function AISimulator() {
                                             <RefreshCcw className="w-3 h-3" /> 다시 진단하기
                                         </button>
                                         <div className="flex gap-4">
-                                            <button className="btn-premium btn-premium-primary px-10 py-5">
-                                                전화 상담 연결
+                                            <button
+                                                onClick={() => openModalWithTitle("무료 1:1 심층 상담")}
+                                                className="btn-premium btn-premium-primary px-10 py-5"
+                                            >
+                                                무료 1:1 심층 <span className="text-[1.2em]">상담</span> 신청
                                             </button>
                                         </div>
                                     </div>
@@ -403,6 +539,11 @@ export default function AISimulator() {
                     </p>
                 </div>
             </div>
+            <LeadMagnet
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                title={modalTitle}
+            />
         </section>
     );
 }

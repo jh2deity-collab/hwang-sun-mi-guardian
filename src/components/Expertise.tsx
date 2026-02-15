@@ -157,7 +157,7 @@ const Expertise = () => {
                 >
                     <div className="max-w-xl relative z-10">
                         <h3 className="text-3xl font-bold text-slate-100 mb-4">
-                            금융의 깊이가 만드는 <span className="text-gold-500 italic">특별한 가치</span>를 경험하세요
+                            금융의 깊이가 만드는 <span className="text-gold-500 italic">특별한 가치</span> 를 경험하세요
                         </h3>
                         <p className="text-slate-400 text-base leading-relaxed">
                             MDRT 정회원으로서 검증된 전문성과 하이엔드 자산 관리 철학으로

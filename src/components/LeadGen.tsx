@@ -1,10 +1,24 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Download, Mail, BookOpen, Crown } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Download, Mail, BookOpen, Crown, CheckCircle2, Loader2 } from "lucide-react";
 import Image from "next/image";
 
 export default function LeadGen() {
+    const [email, setEmail] = useState("");
+    const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email) return;
+
+        setStatus("loading");
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setStatus("success");
+    };
+
     return (
         <section className="section-padding bg-primary relative overflow-hidden">
             {/* Professional Background Image with Overlay */}
@@ -59,38 +73,81 @@ export default function LeadGen() {
                         </div>
                     </div>
 
-                    <div className="bg-white p-12 md:p-20 rounded-[4rem] shadow-2xl relative">
-                        <div className="space-y-10">
-                            <div className="text-center space-y-4">
-                                <h4 className="text-3xl font-serif font-black text-primary">Newsletter Insight</h4>
-                                <p className="text-sm text-primary/40 font-medium">매월 가장 가치 있는 금융 통찰을 메일함으로 보내드립니다.</p>
-                            </div>
+                    <div className="bg-white p-12 md:p-20 rounded-[4rem] shadow-2xl relative min-h-[500px] flex items-center justify-center">
+                        <AnimatePresence mode="wait">
+                            {status === "success" ? (
+                                <motion.div
+                                    key="success"
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="text-center space-y-8"
+                                >
+                                    <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <CheckCircle2 className="w-10 h-10 text-accent" />
+                                    </div>
+                                    <div className="space-y-4">
+                                        <h4 className="text-3xl font-serif font-black text-primary">구독이 완료되었습니다!</h4>
+                                        <p className="text-lg text-primary/60 font-medium">황선미 가디언의 프리미엄 인사이트를<br />가장 먼저 전달해 드리겠습니다.</p>
+                                    </div>
+                                    <button
+                                        onClick={() => { setStatus("idle"); setEmail(""); }}
+                                        className="text-[11px] font-black uppercase tracking-widest text-accent hover:text-primary transition-colors pt-4"
+                                    >
+                                        Back to Form
+                                    </button>
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    key="form"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="w-full space-y-10"
+                                >
+                                    <div className="text-center space-y-4">
+                                        <h4 className="text-3xl font-serif font-black text-primary">Newsletter Insight</h4>
+                                        <p className="text-base text-primary/70 font-bold">매월 가장 가치 있는 금융 통찰을 메일함으로 보내드립니다.</p>
+                                    </div>
 
-                            <form className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-[9px] font-black uppercase tracking-widest text-primary/40 ml-4">Email Address</label>
-                                    <input
-                                        type="email"
-                                        placeholder="이메일 주소를 입력해 주세요"
-                                        className="w-full px-8 py-5 bg-silver/30 rounded-full border border-transparent focus:border-accent focus:bg-white outline-none transition-all font-bold"
-                                    />
-                                </div>
-                                <div className="flex items-start gap-3 px-4">
-                                    <input type="checkbox" id="privacy" className="mt-1 accent-accent" />
-                                    <label htmlFor="privacy" className="text-[10px] text-primary/40 leading-snug">
-                                        개인정보 수집 및 뉴스레터 발송에 동의합니다. <br />언제든 한 번의 클릭으로 구독을 해지할 수 있습니다.
-                                    </label>
-                                </div>
-                                <button className="w-full btn-premium btn-premium-primary py-6 gap-3 group">
-                                    뉴스레터 구독하기
-                                    <Mail className="w-4 h-4 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
-                                </button>
-                            </form>
+                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                        <div className="space-y-2">
+                                            <label className="text-[11px] font-black uppercase tracking-widest text-primary/60 ml-4">Email Address</label>
+                                            <input
+                                                type="email"
+                                                required
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                placeholder="이메일 주소를 입력해 주세요"
+                                                className="w-full px-8 py-6 bg-silver/30 rounded-full border border-transparent focus:border-accent focus:bg-white outline-none transition-all font-black text-lg placeholder:text-primary/30"
+                                            />
+                                        </div>
+                                        <div className="flex items-start gap-3 px-4">
+                                            <input type="checkbox" required id="privacy" className="mt-1 accent-accent" />
+                                            <label htmlFor="privacy" className="text-[12px] text-primary/70 font-bold leading-snug">
+                                                개인정보 수집 및 뉴스레터 발송에 동의합니다. <br />언제든 한 번의 클릭으로 구독을 해지할 수 있습니다.
+                                            </label>
+                                        </div>
+                                        <button
+                                            disabled={status === "loading"}
+                                            className="w-full btn-premium btn-premium-primary py-6 gap-3 group relative disabled:opacity-70"
+                                        >
+                                            {status === "loading" ? (
+                                                <Loader2 className="w-5 h-5 animate-spin mx-auto" />
+                                            ) : (
+                                                <>
+                                                    뉴스레터 구독하기
+                                                    <Mail className="w-4 h-4 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+                                                </>
+                                            )}
+                                        </button>
+                                    </form>
 
-                            <p className="text-center text-[9px] text-primary/20 uppercase font-black tracking-widest">
-                                Trusted by 2,500+ Wealth Seekers
-                            </p>
-                        </div>
+                                    <p className="text-center text-[9px] text-primary/20 uppercase font-black tracking-widest">
+                                        Trusted by 2,500+ Wealth Seekers
+                                    </p>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 </div>
             </div>

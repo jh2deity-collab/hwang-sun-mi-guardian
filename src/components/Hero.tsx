@@ -84,7 +84,7 @@ export default function Hero() {
                                         transition={{ duration: 1.2, delay: 1 }}
                                         className="absolute bottom-2 left-0 w-full h-4 bg-accent/15 -z-10 origin-left"
                                     />
-                                </span>입니다.
+                                </span> 입니다.
                             </h1>
                         </div>
 
@@ -104,7 +104,7 @@ export default function Hero() {
                                 onClick={() => setIsModalOpen(true)}
                                 className="btn-premium btn-premium-primary group px-16 py-7 text-lg shadow-2xl hover:shadow-accent/30 transition-all duration-500"
                             >
-                                무료 1:1 심층 상담 신청
+                                무료 1:1 심층 <span className="text-[1.2em]">상담</span> 신청
                                 <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                             </button>
                             <div className="flex flex-col gap-2 relative group cursor-pointer">
@@ -137,19 +137,7 @@ export default function Hero() {
                             {/* Sophisticated Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-t from-[#1a2b4b]/90 via-transparent to-transparent opacity-60 group-hover:opacity-30 transition-opacity duration-1000" />
 
-                            {/* Floating Professional Info */}
-                            <div className="absolute bottom-16 left-16 right-16 flex flex-col items-start gap-4 text-white">
-                                <motion.div
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.2 }}
-                                    className="h-[1px] w-12 bg-accent/60"
-                                />
-                                <div>
-                                    <p className="text-5xl font-serif font-black mb-2 tracking-tighter drop-shadow-xl">황선미</p>
-                                    <p className="text-[11px] uppercase tracking-[0.5em] font-black text-accent/90">Master Wealth Advisor</p>
-                                </div>
-                            </div>
+                            {/* Floating Professional Info Removed per user request */}
                         </div>
 
                         {/* Achievement Badge (Floating Card) with Hover Animation */}
@@ -171,9 +159,9 @@ export default function Hero() {
                                     </div>
                                 </div>
                             </div>
-                            <p className="text-xl font-serif font-black text-white leading-tight tracking-tight">
-                                상위 1% MDRT 정회원<br />
-                                및 글로벌 종신회원
+                            <p className="text-base font-serif font-black text-white leading-tight tracking-tight">
+                                상위 1% MDRT 정회원 및<br />
+                                글로벌 종신회원
                             </p>
                         </motion.div>
                     </motion.div>

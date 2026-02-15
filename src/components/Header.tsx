@@ -2,12 +2,15 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { Menu, X, ArrowUpRight, MessageSquare } from "lucide-react";
 import Image from "next/image";
+import { motion } from "framer-motion";
+import LeadMagnet from "./LeadMagnet";
 
 export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -92,11 +95,8 @@ export default function Header() {
                                 </div>
 
                                 <div className="flex flex-col items-center relative z-10">
-                                    <span className="text-[13px] font-black uppercase tracking-[0.2em] text-primary/70 group-hover:text-primary transition-colors">
+                                    <span className="text-[15px] font-black uppercase tracking-[0.15em] text-primary group-hover:text-primary/80 transition-colors">
                                         {item.name}
-                                    </span>
-                                    <span className="text-[9px] font-bold text-accent opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
-                                        {item.label}
                                     </span>
                                 </div>
                             </Link>
@@ -105,12 +105,18 @@ export default function Header() {
 
                     {/* Action Area */}
                     <div className="flex items-center gap-4 pr-2">
-                        <div className="hidden xl:flex flex-col items-end mr-4">
-                            <span className="text-[9px] font-black text-primary/40 uppercase tracking-widest">Global MDRT</span>
-                            <span className="text-[15px] font-bold text-primary">010.8673.4589</span>
-                        </div>
-                        <button className="btn-premium btn-premium-primary py-4 px-10 text-[12px] sm:flex hidden shadow-xl hover:-translate-y-1 transition-transform">
-                            상담 예약
+                        <button
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-ai-guardian'))}
+                            className="btn-premium bg-primary/90 text-accent border-accent/30 py-4 px-10 text-[12px] xl:flex hidden shadow-xl hover:-translate-y-1 transition-transform"
+                        >
+                            <MessageSquare size={16} />
+                            <span className="text-[1.2em]">AI <span className="text-white">Guardian</span></span>
+                        </button>
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="btn-premium btn-premium-primary py-4 px-10 text-[12px] sm:flex hidden shadow-xl hover:-translate-y-1 transition-transform"
+                        >
+                            <span className="text-[1.2em]">상담 예약</span>
                             <ArrowUpRight className="w-4 h-4 text-accent" />
                         </button>
                         <button
@@ -125,28 +131,62 @@ export default function Header() {
 
             {/* Mobile Menu Overlay */}
             {isMenuOpen && (
-                <div className="lg:hidden absolute top-full left-6 right-6 bg-white/95 backdrop-blur-xl border border-primary/5 p-10 rounded-[3rem] mt-4 shadow-2xl animate-in fade-in zoom-in duration-300 origin-top">
-                    <div className="space-y-8">
-                        {navItems.map((item) => (
+                <div className="lg:hidden absolute top-full left-6 right-6 bg-primary/95 backdrop-blur-2xl border border-white/10 p-10 rounded-[3rem] mt-6 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] animate-in fade-in zoom-in slide-in-from-top-4 duration-500 origin-top overflow-hidden">
+                    <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] pointer-events-none" />
+                    <div className="space-y-8 relative z-10">
+                        {navItems.map((item, idx) => (
                             <Link
                                 key={item.name}
                                 href={item.href}
                                 onClick={() => setIsMenuOpen(false)}
-                                className="flex items-center justify-between group"
+                                className="flex items-center justify-between group py-2"
                             >
-                                <div>
-                                    <p className="text-[10px] font-black text-accent uppercase tracking-widest mb-1">{item.label}</p>
-                                    <p className="text-2xl font-serif font-black text-primary group-hover:translate-x-2 transition-transform">{item.name}</p>
-                                </div>
-                                <ArrowUpRight className="text-primary/20 group-hover:text-accent transition-colors" />
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: idx * 0.1 + 0.2 }}
+                                >
+                                    <p className="text-[10px] font-black text-accent/60 uppercase tracking-[0.3em] mb-2">{item.label}</p>
+                                    <p className="text-3xl font-serif font-black text-white group-hover:text-accent group-hover:translate-x-3 transition-all duration-500">{item.name}</p>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: idx * 0.1 + 0.3 }}
+                                >
+                                    <ArrowUpRight className="text-white/20 group-hover:text-accent group-hover:rotate-45 transition-all duration-500" />
+                                </motion.div>
                             </Link>
                         ))}
-                        <button className="w-full btn-premium btn-premium-primary py-6 text-xs mt-4">
-                            상담 신청하기
-                        </button>
+                        <motion.button
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5 }}
+                            onClick={() => { setIsMenuOpen(false); window.dispatchEvent(new CustomEvent('open-ai-guardian')); }}
+                            className="w-full py-6 bg-navy border border-accent/20 text-accent font-black rounded-2xl mt-6 flex items-center justify-center gap-3 text-xs uppercase tracking-[0.2em]"
+                        >
+                            <MessageSquare size={18} />
+                            <span>AI Guardian Advisor</span>
+                        </motion.button>
+                        <motion.button
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6 }}
+                            onClick={() => { setIsMenuOpen(false); setIsModalOpen(true); }}
+                            className="w-full py-6 bg-gradient-to-r from-accent to-[#D4AF37] text-primary font-black rounded-2xl mt-6 shadow-[0_15px_30px_rgba(197,160,40,0.2)] flex items-center justify-center gap-3 text-xs uppercase tracking-[0.2em]"
+                        >
+                            <span>상담 예약</span>
+                            <ArrowUpRight className="w-4 h-4" />
+                        </motion.button>
                     </div>
                 </div>
             )}
+
+            <LeadMagnet
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                title="VIP 프라이빗 상담 예약"
+            />
         </header>
     );
 }

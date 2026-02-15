@@ -11,20 +11,42 @@ export default function HwangBot() {
     ]);
     const [input, setInput] = useState("");
 
-    const handleSend = () => {
-        if (!input.trim()) return;
-        const newMsg = { role: "user", text: input };
-        setMessages([...messages, newMsg]);
+    const [isTyping, setIsTyping] = useState(false);
+
+    const handleSend = async () => {
+        if (!input.trim() || isTyping) return;
+
+        const userMessage = { role: "user", text: input };
+        const newMessages = [...messages, userMessage];
+        setMessages(newMessages);
         setInput("");
+        setIsTyping(true);
 
-        // Simulated Response Logic
-        setTimeout(() => {
-            let botText = "죄송합니다. 아직 학습 중인 단계입니다. 상세한 상담을 위해 연락처를 남겨주시면 황선미 설계사가 직접 연락드리겠습니다.";
-            if (input.includes("은퇴")) botText = "은퇴 설계에 대해 궁금하시군요! 저희 은퇴 계산기를 활용해 보셨나요? 구체적인 연금 전략 상담도 환영합니다.";
-            if (input.includes("상속")) botText = "상속 및 증여는 가장 정교한 세무 지식이 필요한 분야입니다. 황선미 설계사의 리포트를 먼저 읽어보시는 것을 추천드립니다.";
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: newMessages.map(m => ({
+                        role: m.role === 'bot' ? 'assistant' : 'user',
+                        content: m.text
+                    }))
+                }),
+            });
 
-            setMessages(prev => [...prev, { role: "bot", text: botText }]);
-        }, 1000);
+            if (!response.ok) throw new Error('API 호출 실패');
+
+            const data = await response.json();
+            setMessages(prev => [...prev, { role: 'bot', text: data.content }]);
+        } catch (error) {
+            console.error('HwangBot Error:', error);
+            setMessages(prev => [...prev, {
+                role: 'bot',
+                text: '죄송합니다. 서버와 통신 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
+            }]);
+        } finally {
+            setIsTyping(false);
+        }
     };
 
     return (
@@ -86,8 +108,8 @@ export default function HwangBot() {
                                         </div>
                                     )}
                                     <div className={`p-4 rounded-2xl text-xs font-medium leading-relaxed max-w-[80%] ${msg.role === 'bot'
-                                            ? 'bg-white text-primary shadow-sm rounded-tl-none'
-                                            : 'bg-primary text-white rounded-tr-none'
+                                        ? 'bg-white text-primary shadow-sm rounded-tl-none'
+                                        : 'bg-primary text-white rounded-tr-none'
                                         }`}>
                                         {msg.text}
                                     </div>
@@ -98,6 +120,20 @@ export default function HwangBot() {
                                     )}
                                 </motion.div>
                             ))}
+                            {isTyping && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="flex justify-start gap-3"
+                                >
+                                    <div className="w-8 h-8 bg-primary/5 rounded-full flex items-center justify-center text-primary flex-shrink-0">
+                                        <Shield className="w-4 h-4" />
+                                    </div>
+                                    <div className="p-4 rounded-2xl text-[10px] font-bold bg-white text-primary/40 shadow-sm rounded-tl-none italic">
+                                        가디언이 답변을 작성 중입니다...
+                                    </div>
+                                </motion.div>
+                            )}
                         </div>
 
                         {/* Input Area */}
@@ -108,8 +144,9 @@ export default function HwangBot() {
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                                    placeholder="무엇이든 물어보세요"
-                                    className="flex-1 bg-transparent outline-none text-xs font-bold text-primary"
+                                    placeholder={isTyping ? "답변을 기다리는 중..." : "무엇이든 물어보세요"}
+                                    disabled={isTyping}
+                                    className="flex-1 bg-transparent outline-none text-xs font-bold text-primary disabled:opacity-50"
                                 />
                                 <button
                                     onClick={handleSend}

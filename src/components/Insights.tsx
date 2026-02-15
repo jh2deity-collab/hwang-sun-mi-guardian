@@ -141,7 +141,7 @@ const Insights = () => {
 
                     <div className="max-w-xl relative z-10">
                         <h3 className="text-3xl font-bold text-slate-100 mb-4">
-                            황선미 가디언의 <span className="text-gold-500 italic">2026 자산 가이드북</span>을 받아보세요
+                            황선미 가디언의 <span className="text-gold-500 italic">2026 자산 가이드북</span> 을 받아보세요
                         </h3>
                         <p className="text-slate-400 text-base leading-relaxed">
                             상위 1% 자산승계 노하우부터 CEO 리스크 관리까지,

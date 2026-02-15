@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Calculator, Send, TrendingUp, ShieldCheck, User, Mail, ArrowRight, Download } from 'lucide-react';
 import { calculateGiftTax, simulateAssetGrowth } from '@/lib/calculator';
 import LeadMagnet from './LeadMagnet';
+import ReportTemplate from './ReportTemplate';
 
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -28,6 +29,7 @@ const AIGuardian = () => {
     const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
     const [leadTitle, setLeadTitle] = useState("");
 
+    const [isTyping, setIsTyping] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const reportRef = useRef<HTMLDivElement>(null);
 
@@ -35,23 +37,40 @@ const AIGuardian = () => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
-    }, [messages]);
+    }, [messages, isTyping]);
 
-    const handleSendMessage = () => {
-        if (!input.trim()) return;
-        const newMessages = [...messages, { role: 'user', content: input }];
+    const handleSendMessage = async () => {
+        if (!input.trim() || isTyping) return;
+
+        const userMessage = { role: 'user', content: input };
+        const newMessages = [...messages, userMessage];
+
         setMessages(newMessages);
         setInput('');
+        setIsTyping(true);
 
-        setTimeout(() => {
-            let response = "금융 전문가로서 고객님의 상황을 면밀히 검토해드리고 싶습니다. 구체적인 자산 현황이나 가족 관계를 말씀해주시면 더 정확한 안내가 가능합니다.";
-            if (input.includes('증여') || input.includes('세금')) {
-                response = "증여세는 공제 한도와 자산 종류에 따라 전략이 크게 달라집니다. 오른쪽 '계산기' 탭에서 대략적인 세액과 미래 가치를 확인해보시겠어요? 상세한 절세 플랜은 대면 상담을 추천드립니다.";
-            } else if (input.includes('상담') || input.includes('연락')) {
-                response = "상담 신청을 원하시는군요. 성함과 연락처를 남겨주시거나 하단의 '상담 신청' 버튼을 클릭해주시면 황선미 팀장이 직접 연락드리겠습니다.";
-            }
-            setMessages([...newMessages, { role: 'assistant', content: response }]);
-        }, 1000);
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: newMessages.map(m => ({ role: m.role, content: m.content }))
+                }),
+            });
+
+            if (!response.ok) throw new Error('API 호출 실패');
+
+            const data = await response.json();
+            setMessages(prev => [...prev, { role: 'assistant', content: data.content }]);
+        } catch (error) {
+            console.error('Chat Error:', error);
+            setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: '죄송합니다. 서버와 통신 중 오류가 발생했습니다. 잠시 후 다시 시도해주시거나, 상담 예약 버튼을 이용해주세요.'
+            }]);
+        } finally {
+            setIsTyping(false);
+        }
     };
 
     const runSimulation = () => {
@@ -76,53 +95,26 @@ const AIGuardian = () => {
         setIsGenerating(true);
 
         try {
-            const doc = new jsPDF('p', 'mm', 'a4');
-            const pageWidth = doc.internal.pageSize.getWidth();
+            // 렌더링을 위한 잠시 대기 (DOM에 반영되도록)
+            await new Promise(resolve => setTimeout(resolve, 100));
 
-            // 프리미엄 리포트 디자인 (수동 구축)
-            doc.setFillColor(26, 43, 75); // Blue 900
-            doc.rect(0, 0, pageWidth, 40, 'F');
+            const element = document.getElementById('premium-report-template');
+            if (!element) throw new Error('템플릿을 찾을 수 없습니다.');
 
-            doc.setTextColor(212, 175, 55); // Gold
-            doc.setFontSize(22);
-            doc.text('FUTURE VALUE REPORT', pageWidth / 2, 20, { align: 'center' });
-            doc.setFontSize(10);
-            doc.text('BY HWANG SUN MI - WEALTH GUARDIAN', pageWidth / 2, 30, { align: 'center' });
+            const canvas = await html2canvas(element, {
+                scale: 3, // 고해상도 캡처
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff'
+            });
 
-            doc.setTextColor(40, 40, 40);
-            doc.setFontSize(14);
-            doc.text('1. Simulation Summary', 20, 60);
-            doc.setFontSize(11);
-            doc.text(`- Initial Assets: ${calcResult.principal.toLocaleString()} KRW`, 25, 75);
-            doc.text(`- Annual Growth Rate: ${calcResult.rate}%`, 25, 85);
-            doc.text(`- Strategy Period: ${calcResult.period} Years`, 25, 95);
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-            doc.setFontSize(14);
-            doc.text('2. Estimated Results', 20, 115);
-            doc.setFontSize(12);
-            doc.setTextColor(26, 43, 75);
-            doc.text(`Expected Gift Tax: ${calcResult.tax.toLocaleString()} KRW`, 25, 130);
-            doc.setFontSize(16);
-            doc.setTextColor(184, 134, 11);
-            doc.text(`Future Market Value: ${calcResult.finalBalance.toLocaleString()} KRW`, 25, 145);
-
-            doc.setDrawColor(212, 175, 55);
-            doc.setLineWidth(0.5);
-            doc.line(20, 160, pageWidth - 20, 160);
-
-            doc.setTextColor(100, 100, 100);
-            doc.setFontSize(9);
-            const disclaimer = "* This report is a simulation based on current tax laws and assumed interest rates.\n  Actual results may vary significantly based on legal changes and market fluctuations.";
-            doc.text(disclaimer, 20, 175);
-
-            doc.setFillColor(245, 245, 245);
-            doc.rect(20, 195, pageWidth - 40, 40, 'F');
-            doc.setTextColor(26, 43, 75);
-            doc.setFontSize(11);
-            doc.text('Consultation Inquiry: 010.8673.4589', pageWidth / 2, 215, { align: 'center' });
-            doc.text('Tailored asset succession strategy is available.', pageWidth / 2, 225, { align: 'center' });
-
-            doc.save(`Wealth_Guardian_Report_${new Date().getTime()}.pdf`);
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save(`Wealth_Guardian_Report_${new Date().getTime()}.pdf`);
         } catch (error) {
             console.error('PDF Generation Failed:', error);
         } finally {
@@ -130,168 +122,210 @@ const AIGuardian = () => {
         }
     };
 
+    useEffect(() => {
+        const handleOpen = () => setIsOpen(true);
+        window.addEventListener('open-ai-guardian', handleOpen);
+        return () => window.removeEventListener('open-ai-guardian', handleOpen);
+    }, []);
+
     return (
-        <div className="fixed bottom-8 right-8 z-50">
-            <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setIsOpen(!isOpen)}
-                className="w-16 h-16 bg-blue-900 text-gold-500 rounded-full shadow-2xl flex items-center justify-center border-2 border-gold-500/50 backdrop-blur-md"
-            >
-                {isOpen ? <X size={32} /> : <MessageSquare size={32} />}
-            </motion.button>
-
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                        className="absolute bottom-20 right-0 w-96 max-h-[650px] bg-slate-900 border border-gold-500/30 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
-                    >
-                        <div className="p-4 bg-gradient-to-r from-blue-900 to-slate-900 border-b border-gold-500/20 flex justify-between items-center shrink-0">
-                            <div className="flex items-center gap-2">
-                                <ShieldCheck className="text-gold-500" size={20} />
-                                <span className="text-gold-100 font-semibold truncate">AI Guardian Advisor</span>
-                            </div>
-                            <div className="flex bg-slate-800/50 rounded-lg p-1">
-                                <button
-                                    onClick={() => setActiveTab('chat')}
-                                    className={`px-3 py-1 rounded-md text-xs transition-all ${activeTab === 'chat' ? 'bg-gold-500 text-blue-900' : 'text-slate-400 font-medium'}`}
-                                >
-                                    상담
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab('calc')}
-                                    className={`px-3 py-1 rounded-md text-xs transition-all ${activeTab === 'calc' ? 'bg-gold-500 text-blue-900' : 'text-slate-400 font-medium'}`}
-                                >
-                                    시뮬레이터
-                                </button>
-                            </div>
-                        </div>
-
-                        {activeTab === 'chat' ? (
-                            <>
-                                <div ref={scrollRef} className="h-96 p-4 overflow-y-auto space-y-4 scrollbar-hide">
-                                    {messages.map((msg, i) => (
-                                        <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                            <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${msg.role === 'user' ? 'bg-gold-500 text-blue-900 rounded-tr-none' : 'bg-slate-800 text-slate-100 border border-slate-700 rounded-tl-none'}`}>
-                                                {msg.content}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="p-4 border-t border-slate-800 flex gap-2">
-                                    <input
-                                        type="text"
-                                        value={input}
-                                        onChange={(e) => setInput(e.target.value)}
-                                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                                        placeholder="질문을 입력하세요..."
-                                        className="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-100 focus:outline-none focus:border-gold-500"
-                                    />
-                                    <button onClick={handleSendMessage} className="p-2 bg-gold-500 text-blue-900 rounded-xl hover:bg-gold-400 transition-colors">
-                                        <Send size={20} />
-                                    </button>
-                                </div>
-                            </>
-                        ) : (
-                            <div className="flex-1 p-6 overflow-y-auto space-y-6 scrollbar-hide">
-                                <div className="space-y-4">
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] uppercase tracking-widest text-gold-500/70 font-bold ml-1">Asset Amount</label>
-                                        <input
-                                            type="number"
-                                            value={assetAmount}
-                                            onChange={(e) => setAssetAmount(Number(e.target.value))}
-                                            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-lg text-slate-100 focus:outline-none focus:border-gold-500"
-                                        />
+        <div className="fixed bottom-8 right-8 z-50 pointer-events-none">
+            <div className="pointer-events-auto">
+                <AnimatePresence>
+                    {isOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+                            className="absolute bottom-20 right-0 w-[400px] max-h-[650px] bg-primary border border-accent/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl"
+                        >
+                            <div className="p-5 bg-gradient-to-r from-primary via-navy to-primary border-b border-accent/20 flex justify-between items-center shrink-0">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-9 h-9 bg-accent flex items-center justify-center rounded-xl shadow-[0_0_15px_rgba(197,160,40,0.3)]">
+                                        <ShieldCheck className="text-primary" size={22} />
                                     </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-1">
-                                            <label className="text-[10px] uppercase tracking-widest text-gold-500/70 font-bold ml-1">Annual Rate (%)</label>
-                                            <input
-                                                type="number"
-                                                value={growthRate}
-                                                onChange={(e) => setGrowthRate(Number(e.target.value))}
-                                                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-100 focus:outline-none focus:border-gold-500"
-                                            />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <label className="text-[10px] uppercase tracking-widest text-gold-500/70 font-bold ml-1">Period (Years)</label>
-                                            <input
-                                                type="number"
-                                                value={period}
-                                                onChange={(e) => setPeriod(Number(e.target.value))}
-                                                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-100 focus:outline-none focus:border-gold-500"
-                                            />
-                                        </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-white font-serif font-black text-base tracking-tight leading-none">Guardian Advisor</span>
+                                        <span className="text-[9px] text-accent/70 font-black uppercase tracking-widest mt-1">Live Support</span>
                                     </div>
-                                    <button
-                                        onClick={runSimulation}
-                                        className="w-full py-4 bg-blue-900 text-gold-500 border border-gold-500/50 rounded-xl hover:bg-blue-800 transition-all font-bold shadow-xl shadow-gold-500/5 flex items-center justify-center gap-2"
-                                    >
-                                        <Calculator size={18} /> 시뮬레이션 실행
-                                    </button>
                                 </div>
-
-                                {calcResult && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className="space-y-4"
-                                    >
-                                        <div className="p-5 bg-slate-800/80 rounded-2xl border border-gold-500/30 space-y-4 shadow-inner">
-                                            <div className="flex justify-between items-center text-xs border-b border-slate-700 pb-2">
-                                                <span className="text-slate-400">예상 증여세</span>
-                                                <span className="text-slate-100 font-bold">{calcResult.tax.toLocaleString()}원</span>
-                                            </div>
-                                            <div className="flex flex-col gap-1">
-                                                <span className="text-[10px] text-gold-500/70 uppercase tracking-widest font-black">Future Value Prediction</span>
-                                                <span className="text-2xl font-black text-gold-500 tracking-tighter">{calcResult.finalBalance.toLocaleString()}원</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <button
-                                                onClick={downloadPDF}
-                                                disabled={isGenerating}
-                                                className="flex-1 py-3 bg-slate-100 text-blue-900 font-black rounded-xl hover:bg-white transition-all flex items-center justify-center gap-2 text-[10px] uppercase tracking-wider border border-gold-500/20 shadow-lg disabled:opacity-50"
-                                            >
-                                                PDF 다운로드 <Download size={14} />
-                                            </button>
-                                            <button
-                                                onClick={() => openLeadModal("미래 가치 리포트 이메일 발송")}
-                                                className="flex-1 py-3 bg-blue-600 text-white font-black rounded-xl hover:bg-blue-500 transition-all flex items-center justify-center gap-2 text-[10px] uppercase tracking-wider shadow-lg"
-                                            >
-                                                이메일로 받기 <Mail size={14} />
-                                            </button>
-                                        </div>
-
+                                <div className="flex items-center gap-3">
+                                    <div className="flex bg-white/5 rounded-xl p-1 border border-white/10 backdrop-blur-md">
                                         <button
-                                            onClick={() => openLeadModal("1:1 심층 자산 경영 상담")}
-                                            className="w-full py-4 bg-gradient-to-r from-gold-600 to-gold-400 text-blue-950 font-black rounded-xl hover:from-gold-500 hover:to-gold-300 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-[0.1em] shadow-xl shadow-gold-500/20"
+                                            onClick={() => setActiveTab('chat')}
+                                            className={`px-4 py-1.5 rounded-lg text-[11px] font-black transition-all ${activeTab === 'chat' ? 'bg-accent text-primary shadow-md' : 'text-white/40 hover:text-white'}`}
                                         >
-                                            무료 1:1 심층 상담 신청 <ArrowRight size={16} />
+                                            상담
                                         </button>
-                                    </motion.div>
-                                )}
+                                        <button
+                                            onClick={() => setActiveTab('calc')}
+                                            className={`px-4 py-1.5 rounded-lg text-[11px] font-black transition-all ${activeTab === 'calc' ? 'bg-accent text-primary shadow-md' : 'text-white/40 hover:text-white'}`}
+                                        >
+                                            시뮬레이터
+                                        </button>
+                                    </div>
+                                    <motion.button
+                                        whileHover={{ scale: 1.1, rotate: 90 }}
+                                        whileTap={{ scale: 0.9 }}
+                                        onClick={() => setIsOpen(false)}
+                                        className="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all"
+                                    >
+                                        <X size={18} strokeWidth={3} />
+                                    </motion.button>
+                                </div>
                             </div>
-                        )}
 
-                        <div className="p-3 bg-slate-900 border-t border-slate-800 flex justify-center shrink-0">
-                            <span className="text-[9px] text-slate-500 uppercase tracking-widest">
-                                Private Wealth Guardian - HSM
-                            </span>
-                        </div>
-                    </motion.div>
+                            {activeTab === 'chat' ? (
+                                <>
+                                    <div ref={scrollRef} className="h-96 p-5 overflow-y-auto space-y-4 scrollbar-hide bg-navy/30">
+                                        {messages.map((msg, i) => (
+                                            <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                                <div className={`max-w-[85%] p-4 rounded-2xl text-[15px] leading-relaxed shadow-lg ${msg.role === 'user'
+                                                    ? 'bg-accent text-primary font-bold rounded-tr-none'
+                                                    : 'bg-white/10 text-white border border-white/10 rounded-tl-none backdrop-blur-sm'}`}>
+                                                    {msg.content}
+                                                </div>
+                                            </div>
+                                        ))}
+                                        {isTyping && (
+                                            <div className="flex justify-start">
+                                                <div className="max-w-[80%] p-4 rounded-2xl text-sm bg-white/5 text-white/50 border border-white/10 rounded-tl-none flex items-center gap-2 backdrop-blur-sm">
+                                                    <motion.div
+                                                        animate={{ opacity: [0.4, 1, 0.4] }}
+                                                        transition={{ repeat: Infinity, duration: 1.5 }}
+                                                    >
+                                                        가디언이 답변을 작성 중입니다...
+                                                    </motion.div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="p-5 border-t border-white/10 flex gap-2 bg-primary/50">
+                                        <input
+                                            type="text"
+                                            value={input}
+                                            onChange={(e) => setInput(e.target.value)}
+                                            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                                            placeholder={isTyping ? "답변을 기다리는 중..." : "질문을 입력하세요..."}
+                                            disabled={isTyping}
+                                            className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-accent disabled:opacity-50 transition-all font-medium"
+                                        />
+                                        <button
+                                            onClick={handleSendMessage}
+                                            disabled={isTyping || !input.trim()}
+                                            className="p-3 bg-accent text-primary rounded-2xl hover:bg-accent/80 transition-all disabled:opacity-30 shadow-lg shadow-accent/20 flex items-center justify-center shrink-0"
+                                        >
+                                            <Send size={22} strokeWidth={2.5} />
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="flex-1 p-6 overflow-y-auto space-y-6 scrollbar-hide bg-navy/30">
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <label className="text-[11px] uppercase tracking-[0.2em] text-accent font-black ml-1">현재 보유 자산 (원)</label>
+                                            <input
+                                                type="text"
+                                                value={assetAmount.toLocaleString()}
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/[^0-9]/g, "");
+                                                    setAssetAmount(Number(val));
+                                                }}
+                                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-2xl font-serif font-black text-white focus:outline-none focus:border-accent transition-all"
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-[11px] uppercase tracking-[0.2em] text-accent/70 font-black ml-1">예상 수익률 (%)</label>
+                                                <input
+                                                    type="number"
+                                                    value={growthRate}
+                                                    onChange={(e) => setGrowthRate(Number(e.target.value))}
+                                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-base font-bold text-white focus:outline-none focus:border-accent transition-all"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[11px] uppercase tracking-[0.2em] text-accent/70 font-black ml-1">운용 기간 (년)</label>
+                                                <input
+                                                    type="number"
+                                                    value={period}
+                                                    onChange={(e) => setPeriod(Number(e.target.value))}
+                                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-base font-bold text-white focus:outline-none focus:border-accent transition-all"
+                                                />
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={runSimulation}
+                                            className="w-full py-5 bg-navy text-accent border border-accent/40 rounded-2xl hover:bg-navy/80 transition-all font-black shadow-xl shadow-accent/5 flex items-center justify-center gap-3 uppercase tracking-widest text-sm"
+                                        >
+                                            <Calculator size={20} /> 시뮬레이션 실행
+                                        </button>
+                                    </div>
+
+                                    {calcResult && (
+                                        <div className="space-y-3">
+                                            <div className="p-6 bg-white/5 border border-accent/20 rounded-[2rem] space-y-5 shadow-inner backdrop-blur-xl relative overflow-hidden group">
+                                                <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                <div className="flex justify-between items-center text-[10px] border-b border-white/5 pb-3">
+                                                    <span className="text-accent/60 font-black uppercase tracking-[0.2em]">Expected Gift Tax</span>
+                                                    <span className="text-white font-black">{calcResult.tax.toLocaleString()}원</span>
+                                                </div>
+                                                <div className="flex flex-col gap-2 relative z-10">
+                                                    <span className="text-[10px] text-accent font-black uppercase tracking-[0.2em]">Future Value Prediction</span>
+                                                    <div className="flex items-baseline gap-1">
+                                                        <span className="text-4xl font-serif font-black text-white tracking-tighter leading-none">{calcResult.finalBalance.toLocaleString()}</span>
+                                                        <span className="text-sm font-bold text-accent">원</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <button
+                                                    onClick={downloadPDF}
+                                                    disabled={isGenerating}
+                                                    className="flex-1 py-4 bg-white/5 text-white/80 font-black rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.2em] border border-white/10 disabled:opacity-50 active:scale-95"
+                                                >
+                                                    PDF 다운로드 <Download size={15} />
+                                                </button>
+                                                <button
+                                                    onClick={() => openLeadModal("미래 가치 리포트 이메일 발송")}
+                                                    className="flex-1 py-4 bg-blue-600/20 text-blue-400 font-black rounded-2xl hover:bg-blue-600/30 transition-all flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.2em] border border-blue-500/30 active:scale-95"
+                                                >
+                                                    이메일 전송 <Mail size={15} />
+                                                </button>
+                                            </div>
+
+                                            <button
+                                                onClick={() => openLeadModal("1:1 심층 자산 경영 상담")}
+                                                className="w-full py-5 bg-gradient-to-r from-accent to-[#D4AF37] text-primary font-black rounded-2xl hover:opacity-90 transition-all flex items-center justify-center gap-3 text-xs uppercase tracking-[0.2em] shadow-[0_15px_30px_rgba(197,160,40,0.2)] active:scale-95 mt-4"
+                                            >
+                                                무료 1:1 심층 <span className="text-[1.2em]">상담</span> 신청 <ArrowRight size={18} />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            <div className="p-4 bg-primary border-t border-white/5 flex justify-center shrink-0">
+                                <span className="text-[9px] text-white/20 font-black uppercase tracking-[0.4em]">
+                                    Strategic Wealth Guardian - Advisor
+                                </span>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+                <LeadMagnet
+                    isOpen={isLeadModalOpen}
+                    onClose={() => setIsLeadModalOpen(false)}
+                    title={leadTitle}
+                />
+                {/* Hidden PDF Template Container */}
+                {calcResult && (
+                    <div className="fixed -left-[10000px] top-0 overflow-hidden print:static print:left-0">
+                        <ReportTemplate data={calcResult} />
+                    </div>
                 )}
-            </AnimatePresence>
-            <LeadMagnet
-                isOpen={isLeadModalOpen}
-                onClose={() => setIsLeadModalOpen(false)}
-                title={leadTitle}
-            />
+            </div>
         </div>
     );
 };

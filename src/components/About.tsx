@@ -77,7 +77,7 @@ export default function About() {
                                 <span className="text-accent font-black uppercase tracking-[0.5em] text-[11px]">Philosophy</span>
                             </div>
                             <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif font-black text-primary leading-tight tracking-tight">
-                                단 하나의 <span className="text-gold-shine italic">가디언</span>,<br />
+                                단 하나의 <span className="text-gold-shine italic">가디언</span> ,<br />
                                 흔들리지 않는 전문성
                             </h2>
                             <p className="text-lg md:text-xl text-primary/70 font-medium leading-relaxed max-w-2xl border-l-[3px] border-accent/30 pl-8">

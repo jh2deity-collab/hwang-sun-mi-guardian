@@ -55,6 +55,13 @@ h3 {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
+  padding-right: 0.15em;
+  margin-right: -0.15em;
+}
+
+.italic {
+  padding-right: 0.15em;
+  margin-right: -0.15em;
 }
 
 /* Premium Button Style (세련된 메뉴 버튼) */

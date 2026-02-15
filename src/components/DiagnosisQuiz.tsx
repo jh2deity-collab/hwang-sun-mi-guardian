@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Shield, Target, Zap, ArrowRight, CheckCircle2 } from "lucide-react";
+import LeadMagnet from "./LeadMagnet";
 
 const questions = [
     {
@@ -64,6 +65,13 @@ const results = {
 export default function DiagnosisQuiz() {
     const [currentIdx, setCurrentIdx] = useState(-1); // -1: Intro, 0~N: Quiz, -2: Result
     const [answers, setAnswers] = useState<string[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalTitle, setModalTitle] = useState("무료 1:1 심층 상담");
+
+    const openModalWithTitle = (title: string) => {
+        setModalTitle(title);
+        setIsModalOpen(true);
+    };
 
     const startQuiz = () => setCurrentIdx(0);
 
@@ -110,7 +118,7 @@ export default function DiagnosisQuiz() {
                                             <div className="w-6 h-[1px] bg-accent" />
                                         </div>
                                         <h3 className="text-3xl md:text-4xl lg:text-5xl font-serif font-black text-primary leading-[1.15]">
-                                            당신의 금융 <span className="text-gold-shine italic">정체성</span>은<br />무엇입니까?
+                                            <span className="text-[1.2em]">당신의 금융 <span className="text-gold-shine italic">정체성</span> 은<br />무엇입니까?</span>
                                         </h3>
                                         <p className="text-lg md:text-xl text-primary/50 font-medium max-w-lg mx-auto leading-relaxed border-t border-accent/10 pt-8 mt-8">
                                             정교한 3가지 질문을 통해 당신의 잠재된 자산 운용 성향을 진단하고, 상위 1%를 위한 전문가 맞춤 제언을 확인해 보세요.
@@ -118,9 +126,9 @@ export default function DiagnosisQuiz() {
                                     </div>
                                     <button
                                         onClick={startQuiz}
-                                        className="btn-premium btn-premium-primary py-6 px-12 mx-auto"
+                                        className="btn-premium btn-premium-primary py-6 px-12 mx-auto text-base"
                                     >
-                                        진단 시작하기
+                                        <span className="text-[1.2em]">진단 시작하기</span>
                                         <ArrowRight className="w-4 h-4" />
                                     </button>
                                 </motion.div>
@@ -180,8 +188,18 @@ export default function DiagnosisQuiz() {
                                         </p>
                                     </div>
                                     <div className="pt-8 border-t border-primary/5 flex flex-col md:flex-row gap-4 justify-center">
-                                        <button className="btn-premium btn-premium-outline py-5 px-10">상세 리포트 이메일로 받기</button>
-                                        <button className="btn-premium btn-premium-primary py-5 px-10">무료 1:1 심층 상담 신청</button>
+                                        <button
+                                            onClick={() => openModalWithTitle("진단 결과 상세 리포트")}
+                                            className="btn-premium btn-premium-outline py-5 px-10"
+                                        >
+                                            <span className="text-[1.2em]">상세 리포트 이메일로 받기</span>
+                                        </button>
+                                        <button
+                                            onClick={() => openModalWithTitle("무료 1:1 심층 상담")}
+                                            className="btn-premium btn-premium-primary py-5 px-10"
+                                        >
+                                            무료 1:1 심층 <span className="text-[1.2em]">상담</span> 신청
+                                        </button>
                                     </div>
                                 </motion.div>
                             )}
@@ -189,6 +207,12 @@ export default function DiagnosisQuiz() {
                     </div>
                 </div>
             </div>
+
+            <LeadMagnet
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                title={modalTitle}
+            />
         </section>
     );
 }
