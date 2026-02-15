@@ -9,7 +9,7 @@ export default function Insights() {
             date: "2024.10.12",
             title: "변화하는 자산 시장의 미래와 대응 전략",
             cat: "Market Analysis",
-            image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=1200"
+            image: "https://images.unsplash.com/photo-1591696208182-8cbb7af297df?auto=format&fit=crop&q=80&w=1200"
         },
         {
             date: "2024.09.28",

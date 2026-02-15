@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 
 export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -21,13 +22,13 @@ export default function Header() {
             name: "소개",
             href: "#소개",
             label: "Philosophy",
-            image: "https://images.unsplash.com/photo-1507679799987-c7377ec486b8?auto=format&fit=crop&q=80&w=400"
+            image: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=400"
         },
         {
             name: "서비스",
             href: "#서비스",
             label: "Expertise",
-            image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=400"
+            image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=400"
         },
         {
             name: "인사이트",
@@ -39,7 +40,7 @@ export default function Header() {
             name: "문의",
             href: "#문의",
             label: "Contact",
-            image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=400"
+            image: "https://images.unsplash.com/photo-1591696208182-8cbb7af297df?auto=format&fit=crop&q=80&w=400"
         },
     ];
 
@@ -81,10 +82,11 @@ export default function Header() {
                             >
                                 {/* Hover Image Background */}
                                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10">
-                                    <img
+                                    <Image
                                         src={item.image}
                                         alt=""
-                                        className="w-full h-full object-cover grayscale scale-150 group-hover:scale-100 transition-transform duration-700 opacity-25"
+                                        fill
+                                        className="object-cover grayscale scale-150 group-hover:scale-100 transition-transform duration-700 opacity-25"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-transparent to-white/80" />
                                 </div>

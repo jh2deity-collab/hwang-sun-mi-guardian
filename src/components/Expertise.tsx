@@ -11,21 +11,21 @@ export default function Expertise() {
             kr: "전략적 자산 관리",
             details: "거시적 시장 분석을 바탕으로 개인별 최적화된 포트폴리오를 설계하여 견고한 자산 성장을 실현합니다.",
             icon: <PieChart className="w-10 h-10" />,
-            image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200"
+            image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200"
         },
         {
             title: "Risk Management",
             kr: "철저한 리스크 예방",
             details: "예측 불가능한 위험으로부터 가족과 자산을 지켜내는 최고 수준의 방어 체계를 구축합니다.",
             icon: <Shield className="w-10 h-10" />,
-            image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200"
+            image: "https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?auto=format&fit=crop&q=80&w=1200"
         },
         {
             title: "Legacy & Success",
             kr: "상속 및 가업 승계",
             details: "축적된 유산의 품격이 다음 세대로 온전히 이어질 수 있도록 전문적인 설계와 실행을 돕습니다.",
             icon: <Landmark className="w-10 h-10" />,
-            image: "https://images.unsplash.com/photo-1507679799987-c7377ec486b8?auto=format&fit=crop&q=80&w=1200"
+            image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=1200"
         },
     ];
 

@@ -25,7 +25,7 @@ export default function About() {
                     >
                         <div className="relative aspect-[1/1.618] rounded-[5rem] overflow-hidden shadow-premium border border-primary/5">
                             <Image
-                                src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200"
+                                src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=1200"
                                 alt="Professional Office"
                                 fill
                                 className="absolute inset-0 object-cover grayscale-[0.3] hover:grayscale-0 transition-all duration-[2000ms]"

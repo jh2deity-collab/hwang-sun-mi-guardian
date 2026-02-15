@@ -2,16 +2,18 @@
 
 import { motion } from "framer-motion";
 import { Download, Mail, BookOpen, Crown } from "lucide-react";
+import Image from "next/image";
 
 export default function LeadGen() {
     return (
         <section className="section-padding bg-primary relative overflow-hidden">
             {/* Professional Background Image with Overlay */}
             <div className="absolute inset-0 opacity-20 grayscale pointer-events-none">
-                <img
-                    src="https://images.unsplash.com/photo-1454165833267-028cc21e7867?auto=format&fit=crop&q=80&w=1200"
+                <Image
+                    src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=1200"
                     alt="Background Texture"
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                 />
             </div>
             <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent z-0" />
