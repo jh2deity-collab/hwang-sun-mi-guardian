@@ -22,7 +22,7 @@ export default function SocialProof() {
                             className="space-y-6"
                         >
                             <p className="text-xs uppercase tracking-[0.4em] font-black text-white/40 mb-2">{stat.label}</p>
-                            <h4 className="text-5xl md:text-6xl font-black tracking-tighter text-white">
+                            <h4 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tighter text-white leading-[1.15]">
                                 {stat.value}<span className="text-accent">{stat.suffix}</span>
                             </h4>
                             <div className="w-12 h-1 bg-accent/30 mx-auto" />

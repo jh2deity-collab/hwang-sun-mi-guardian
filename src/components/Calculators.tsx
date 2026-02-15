@@ -54,7 +54,7 @@ export default function Calculators() {
                     <div className="space-y-12">
                         <div className="space-y-6">
                             <span className="text-accent font-black uppercase tracking-[0.4em] text-[10px]">Financial Simulator</span>
-                            <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-black text-primary leading-tight tracking-tight">
+                            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-black text-primary leading-tight tracking-tight">
                                 미래를 숫자로<br />
                                 <span className="text-accent italic">증명</span>해 보세요.
                             </h2>

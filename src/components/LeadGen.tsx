@@ -24,7 +24,7 @@ export default function LeadGen() {
                                 <div className="w-8 h-[1px] bg-accent" />
                                 <span className="text-accent text-[9px] font-black uppercase tracking-[0.5em]">Exclusive Assets</span>
                             </div>
-                            <h3 className="text-5xl md:text-7xl font-serif font-black text-white leading-[1.1] tracking-tight">
+                            <h3 className="text-3xl md:text-4xl lg:text-5xl font-serif font-black text-white leading-[1.15] tracking-tight">
                                 상위 1%를 위한<br />
                                 <span className="text-gold-shine italic">자산 상속 비법서</span>
                             </h3>

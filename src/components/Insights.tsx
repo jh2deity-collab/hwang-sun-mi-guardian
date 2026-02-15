@@ -39,7 +39,7 @@ export default function Insights() {
                             <div className="w-8 h-[1px] bg-accent" />
                             <h2 className="text-accent font-black uppercase tracking-[0.5em] text-[10px]">Financial Intelligence</h2>
                         </div>
-                        <h3 className="text-5xl md:text-7xl font-serif font-black text-primary tracking-tight leading-[1.1]">
+                        <h3 className="text-3xl md:text-4xl lg:text-5xl font-serif font-black text-primary tracking-tight leading-[1.15]">
                             금융과 인생을 관통하는<br /><span className="text-gold-shine italic">전문가적 통찰</span>
                         </h3>
                     </div>

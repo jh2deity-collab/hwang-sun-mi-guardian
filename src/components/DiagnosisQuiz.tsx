@@ -109,7 +109,7 @@ export default function DiagnosisQuiz() {
                                             <span className="text-accent font-black uppercase tracking-[0.5em] text-[10px]">Asset Archetype Quiz</span>
                                             <div className="w-6 h-[1px] bg-accent" />
                                         </div>
-                                        <h3 className="text-5xl md:text-6xl font-serif font-black text-primary leading-tight">
+                                        <h3 className="text-3xl md:text-4xl lg:text-5xl font-serif font-black text-primary leading-[1.15]">
                                             당신의 금융 <span className="text-gold-shine italic">정체성</span>은<br />무엇입니까?
                                         </h3>
                                         <p className="text-lg md:text-xl text-primary/50 font-medium max-w-lg mx-auto leading-relaxed border-t border-accent/10 pt-8 mt-8">
@@ -172,7 +172,7 @@ export default function DiagnosisQuiz() {
                                         <span className="text-accent font-black uppercase tracking-[0.3em] text-[10px] bg-accent/10 px-4 py-1 rounded-full">
                                             {results[answers[0] as keyof typeof results].tag}
                                         </span>
-                                        <h3 className="text-5xl font-serif font-black text-primary">
+                                        <h3 className="text-4xl font-serif font-black text-primary">
                                             {results[answers[0] as keyof typeof results].title}
                                         </h3>
                                         <p className="text-xl text-primary/60 font-medium max-w-lg mx-auto leading-relaxed">

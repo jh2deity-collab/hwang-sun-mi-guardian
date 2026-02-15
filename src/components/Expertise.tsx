@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { PieChart, Shield, Landmark, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 export default function Expertise() {
     const services = [
@@ -33,17 +34,17 @@ export default function Expertise() {
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
 
             <div className="container mx-auto px-6 md:px-12 space-y-24 relative z-10">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
-                    <div className="space-y-8">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-[1px] bg-accent" />
-                            <span className="text-accent font-black uppercase tracking-[0.5em] text-[10px]">Financial Mastery</span>
+                <div className="flex flex-col md:grid md:grid-cols-[1.618fr_1fr] items-end justify-between gap-12 lg:gap-24">
+                    <div className="space-y-10">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-[1px] bg-accent" />
+                            <span className="text-accent font-black uppercase tracking-[0.6em] text-[11px]">Financial Mastery</span>
                         </div>
-                        <h3 className="text-5xl md:text-7xl font-serif font-black text-primary tracking-tight leading-[1.1]">
+                        <h3 className="text-3xl md:text-4xl lg:text-5xl font-serif font-black text-primary tracking-tight leading-[1.15]">
                             초격차 전문성이<br /><span className="text-gold-shine italic">증명하는 특별함</span>
                         </h3>
                     </div>
-                    <p className="text-lg md:text-xl text-primary/50 max-w-sm font-medium leading-relaxed border-l-2 border-accent/20 pl-8">
+                    <p className="text-xl md:text-2xl text-primary/60 max-w-md font-medium leading-relaxed border-l-[3px] border-accent/30 pl-10 py-2">
                         당신의 인생에서 가장 임계점이 되는 금융 의사결정, 황선미가 독보적인 해답을 제시합니다.
                     </p>
                 </div>
@@ -59,11 +60,14 @@ export default function Expertise() {
                             className="group relative h-[600px] rounded-[3rem] overflow-hidden border border-primary/5 shadow-premium active:scale-[0.98] transition-transform"
                         >
                             {/* Background Image */}
-                            <motion.img
-                                src={item.image}
-                                alt={item.kr}
-                                className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 opacity-40 group-hover:opacity-100"
-                            />
+                            <div className="absolute inset-0">
+                                <Image
+                                    src={item.image}
+                                    alt={item.kr}
+                                    fill
+                                    className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 opacity-40 group-hover:opacity-100"
+                                />
+                            </div>
 
                             {/* Gradient Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/40 to-transparent transition-opacity duration-700 opacity-90 group-hover:opacity-70" />

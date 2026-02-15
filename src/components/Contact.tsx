@@ -11,7 +11,7 @@ export default function Contact() {
                     <div className="lg:col-span-5 space-y-12">
                         <div className="space-y-6">
                             <span className="text-accent font-black uppercase tracking-[0.4em] text-[10px]">Connect</span>
-                            <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-black text-primary leading-[1.15] tracking-tight">
+                            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-black text-primary leading-[1.15] tracking-tight">
                                 인생의 풍요,<br />
                                 그 시작은 <span className="text-accent italic">상담</span>입니다.
                             </h2>

@@ -17,6 +17,20 @@ const notoSans = Noto_Sans_KR({
 export const metadata: Metadata = {
   title: "황선미: The Premier Financial Guardian | MDRT 백만 달러 원탁 회의",
   description: "당신의 삶, 그 이상의 가치를 설계합니다. MDRT 회원 재무 설계사 황선미 공식 웹사이트.",
+  keywords: ["재무설계", "MDRT", "자산관리", "상속", "증여", "은퇴설계", "황선미"],
+  openGraph: {
+    title: "황선미: The Premier Financial Guardian",
+    description: "당신의 삶, 그 이상의 가치를 설계합니다.",
+    url: "https://hwang-sun-mi.guardian",
+    siteName: "황선미 가디언",
+    locale: "ko_KR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "황선미: The Premier Financial Guardian",
+    description: "당신의 삶, 그 이상의 가치를 설계합니다.",
+  },
 };
 
 export default function RootLayout({

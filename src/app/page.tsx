@@ -1,15 +1,17 @@
+import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import About from "@/components/About";
-import Expertise from "@/components/Expertise";
-import DiagnosisQuiz from "@/components/DiagnosisQuiz";
-import Calculators from "@/components/Calculators";
-import SocialProof from "@/components/SocialProof";
-import Insights from "@/components/Insights";
-import LeadGen from "@/components/LeadGen";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
-import HwangBot from "@/components/HwangBot";
+
+const About = dynamic(() => import("@/components/About"), { ssr: false });
+const Expertise = dynamic(() => import("@/components/Expertise"), { ssr: false });
+const DiagnosisQuiz = dynamic(() => import("@/components/DiagnosisQuiz"), { ssr: false });
+const AISimulator = dynamic(() => import("@/components/AISimulator"), { ssr: false });
+const SocialProof = dynamic(() => import("@/components/SocialProof"), { ssr: false });
+const Insights = dynamic(() => import("@/components/Insights"), { ssr: false });
+const LeadGen = dynamic(() => import("@/components/LeadGen"), { ssr: false });
+const Contact = dynamic(() => import("@/components/Contact"), { ssr: false });
+const Footer = dynamic(() => import("@/components/Footer"), { ssr: false });
+const HwangBot = dynamic(() => import("@/components/HwangBot"), { ssr: false });
 
 export default function Home() {
   return (
@@ -19,7 +21,7 @@ export default function Home() {
       <About />
       <Expertise />
       <DiagnosisQuiz />
-      <Calculators />
+      <AISimulator />
       <SocialProof />
       <Insights />
       <LeadGen />
