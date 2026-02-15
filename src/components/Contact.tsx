@@ -5,7 +5,7 @@ import { Send, Phone, Mail, MessageSquareText } from "lucide-react";
 
 export default function Contact() {
     return (
-        <section id="문의" className="section-padding bg-ivory-texture">
+        <section id="contact" className="section-padding bg-ivory-texture">
             <div className="container mx-auto px-6 md:px-12">
                 <div className="grid lg:grid-cols-12 gap-16 items-center">
                     <div className="lg:col-span-5 space-y-12">

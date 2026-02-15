@@ -14,12 +14,14 @@ const LeadGen = dynamic(() => import("@/components/LeadGen"), { ssr: false });
 const Contact = dynamic(() => import("@/components/Contact"), { ssr: false });
 const Footer = dynamic(() => import("@/components/Footer"), { ssr: false });
 const HwangBot = dynamic(() => import("@/components/HwangBot"), { ssr: false });
+const AIGuardian = dynamic(() => import('@/components/AIGuardian'), { ssr: false });
 
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-white">
       <Header />
       <Hero />
+      <AIGuardian />
       <About />
       <Expertise />
       <DiagnosisQuiz />

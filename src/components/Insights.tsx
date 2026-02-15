@@ -1,95 +1,171 @@
 "use client";
 
+import React, { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight, BookOpen, Clock, Calendar, Download } from "lucide-react";
+import { insights } from "@/data/insights";
+import LeadMagnet from "./LeadMagnet";
 
-export default function Insights() {
-    const articles = [
-        {
-            date: "2024.10.12",
-            title: "변화하는 자산 시장의 미래와 대응 전략",
-            cat: "Market Analysis",
-            image: "https://images.unsplash.com/photo-1591696208182-8cbb7af297df?auto=format&fit=crop&q=80&w=1200"
-        },
-        {
-            date: "2024.09.28",
-            title: "법인 승계의 핵심, 절세와 안정성의 균형",
-            cat: "Legacy Planning",
-            image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200"
-        },
-        {
-            date: "2024.09.15",
-            title: "은퇴 설계: 정년을 넘어선 삶의 품격",
-            cat: "Retirement",
-            image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200"
-        },
-    ];
+const Insights = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedTitle, setSelectedTitle] = useState("");
+
+    const openRegister = (title: string) => {
+        setSelectedTitle(title);
+        setIsModalOpen(true);
+    };
 
     return (
-        <section id="인사이트" className="section-padding bg-white relative overflow-hidden">
-            {/* Background Accent Lines */}
-            <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none -z-10">
-                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-accent rounded-full blur-[160px] translate-x-1/2 -translate-y-1/2" />
+        <section id="insights" className="py-32 bg-[#020617] relative overflow-hidden">
+            {/* Background Decorative Text */}
+            <div className="absolute top-20 left-0 w-full overflow-hidden whitespace-nowrap opacity-[0.02] pointer-events-none select-none">
+                <span className="text-[15rem] font-bold leading-none tracking-tighter uppercase mr-20">
+                    Digital Authority
+                </span>
             </div>
 
-            <div className="container mx-auto px-6 md:px-12">
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-16 mb-24">
-                    <div className="space-y-8">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-[1px] bg-accent" />
-                            <h2 className="text-accent font-black uppercase tracking-[0.5em] text-[10px]">Financial Intelligence</h2>
-                        </div>
-                        <h3 className="text-3xl md:text-4xl lg:text-5xl font-serif font-black text-primary tracking-tight leading-[1.15]">
-                            금융과 인생을 관통하는<br /><span className="text-gold-shine italic">전문가적 통찰</span>
-                        </h3>
+            <div className="container mx-auto px-6 relative z-10">
+                {/* Section Header */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+                    <div className="max-w-2xl">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="flex items-center gap-2 mb-4"
+                        >
+                            <span className="w-12 h-[1px] bg-gold-500/50"></span>
+                            <span className="text-gold-500 font-semibold uppercase tracking-[0.3em] text-xs">
+                                Insights & Columns
+                            </span>
+                        </motion.div>
+                        <motion.h2
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 }}
+                            className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-slate-100"
+                        >
+                            Expert <span className="text-gold-500 italic">Perspectives</span>
+                        </motion.h2>
                     </div>
-                    <button className="btn-premium btn-premium-outline px-12 group">
-                        View All Publications
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        className="text-slate-400 max-w-sm text-sm leading-relaxed"
+                    >
+                        황선미 가디언이 제안하는 최신 금융 트렌드와
+                        자산 관리의 정석을 담은 통찰을 소개합니다.
+                    </motion.p>
                 </div>
 
-                <div className="grid lg:grid-cols-3 gap-12">
-                    {articles.map((article, idx) => (
+                {/* Magazine Layout Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    {insights.map((insight, index) => (
                         <motion.div
-                            key={idx}
-                            initial={{ opacity: 0, y: 40 }}
+                            key={insight.id}
+                            initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 1, delay: idx * 0.2, ease: [0.16, 1, 0.3, 1] }}
                             viewport={{ once: true }}
-                            className="group"
+                            transition={{ delay: index * 0.1 }}
+                            className="group cursor-pointer"
                         >
-                            <div className="relative aspect-[4/3] rounded-[3rem] overflow-hidden shadow-premium border border-primary/5 mb-10">
-                                <motion.img
-                                    src={article.image}
-                                    alt={article.title}
-                                    className="absolute inset-0 w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000"
+                            <div className="relative aspect-[4/5] mb-6 overflow-hidden rounded-sm bg-slate-900 border border-slate-800">
+                                <Image
+                                    src={insight.image}
+                                    alt={insight.title}
+                                    fill
+                                    className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
 
-                                <div className="absolute top-10 left-10">
-                                    <span className="px-5 py-2 glass-premium rounded-full text-[9px] font-black uppercase tracking-[0.3em] text-white">
-                                        {article.cat}
+                                {/* Overlay Content */}
+                                <div className="absolute top-6 left-6">
+                                    <span className="bg-gold-500 text-blue-900 px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full">
+                                        {insight.category}
                                     </span>
+                                </div>
+
+                                <div className="absolute bottom-6 left-6 right-6">
+                                    <div className="flex items-center gap-4 text-[10px] text-slate-400 font-medium uppercase tracking-widest mb-3">
+                                        <span className="flex items-center gap-1">
+                                            <Calendar size={12} className="text-gold-500" /> {insight.date}
+                                        </span>
+                                        <span className="flex items-center gap-1">
+                                            <Clock size={12} className="text-gold-500" /> {insight.readTime}
+                                        </span>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-slate-100 leading-snug group-hover:text-gold-500 transition-colors">
+                                        {insight.title}
+                                    </h3>
                                 </div>
                             </div>
 
-                            <div className="space-y-6 px-4">
-                                <div className="flex items-center gap-3">
-                                    <p className="text-[10px] font-black text-primary/30 uppercase tracking-[0.5em]">{article.date}</p>
-                                    <div className="h-[1px] w-6 bg-accent/20" />
-                                </div>
-                                <h4 className="text-2xl md:text-3xl font-serif font-black text-primary group-hover:text-accent transition-colors leading-[1.3] tracking-tight">
-                                    {article.title}
-                                </h4>
-                                <div className="flex items-center gap-3 text-accent font-black text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transform -translate-x-4 group-hover:translate-x-0 transition-all duration-500">
-                                    Read Insight <ArrowRight className="w-3 h-3" />
+                            <div className="space-y-4">
+                                <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">
+                                    {insight.summary}
+                                </p>
+
+                                <div className="flex items-center justify-between pt-4 border-t border-slate-800/50">
+                                    <button className="flex items-center gap-2 text-gold-500 font-bold text-xs uppercase tracking-widest group/btn">
+                                        Read Story <ArrowUpRight size={14} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            openRegister(`${insight.category} 가이드`);
+                                        }}
+                                        className="flex items-center gap-1.5 text-slate-400 hover:text-gold-500 transition-colors text-xs font-medium"
+                                    >
+                                        <Download size={14} /> PDF Guide
+                                    </button>
                                 </div>
                             </div>
                         </motion.div>
                     ))}
                 </div>
+
+                {/* Global Lead Magnet Callout */}
+                <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="mt-24 p-12 bg-gradient-to-br from-blue-900 to-slate-900 rounded-3xl border border-gold-500/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-10"
+                >
+                    {/* Decorative Pattern */}
+                    <div className="absolute top-0 right-0 p-20 opacity-10">
+                        <BookOpen size={200} className="text-gold-500" />
+                    </div>
+
+                    <div className="max-w-xl relative z-10">
+                        <h3 className="text-3xl font-bold text-slate-100 mb-4">
+                            황선미 가디언의 <span className="text-gold-500 italic">2026 자산 가이드북</span>을 받아보세요
+                        </h3>
+                        <p className="text-slate-400 text-base leading-relaxed">
+                            상위 1% 자산승계 노하우부터 CEO 리스크 관리까지,
+                            전문가의 깊은 식견이 담긴 프리미엄 리포트를 무료로 제공해 드립니다.
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={() => openRegister("2026 자산 관리 통합 가이드")}
+                        className="relative z-10 px-10 py-5 bg-gold-500 text-blue-900 font-bold rounded-full hover:bg-gold-400 transition-all flex items-center gap-3 shadow-xl shadow-gold-500/20 whitespace-nowrap"
+                    >
+                        프리미엄 리포트 신청하기 <Download size={20} />
+                    </button>
+                </motion.div>
             </div>
+
+            {/* Lead Magnet Modal */}
+            <LeadMagnet
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                title={selectedTitle}
+            />
         </section>
     );
-}
+};
+
+export default Insights;

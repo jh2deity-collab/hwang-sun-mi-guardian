@@ -20,25 +20,25 @@ export default function Header() {
     const navItems = [
         {
             name: "소개",
-            href: "#소개",
+            href: "#about",
             label: "Philosophy",
             image: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=400"
         },
         {
             name: "서비스",
-            href: "#서비스",
+            href: "#service",
             label: "Expertise",
             image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=400"
         },
         {
             name: "인사이트",
-            href: "#인사이트",
+            href: "#insights",
             label: "Insights",
             image: "https://images.unsplash.com/photo-1454165833267-028cc21e7867?auto=format&fit=crop&q=80&w=400"
         },
         {
             name: "문의",
-            href: "#문의",
+            href: "#contact",
             label: "Contact",
             image: "https://images.unsplash.com/photo-1591696208182-8cbb7af297df?auto=format&fit=crop&q=80&w=400"
         },
