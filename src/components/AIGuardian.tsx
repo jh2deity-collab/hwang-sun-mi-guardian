@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import { MessageSquare, X, Calculator, Send, TrendingUp, ShieldCheck, User, Mail, ArrowRight, Download } from 'lucide-react';
 import { calculateGiftTax, simulateAssetGrowth } from '@/lib/calculator';
 import LeadMagnet from './LeadMagnet';
@@ -32,6 +32,8 @@ const AIGuardian = () => {
     const [isTyping, setIsTyping] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const reportRef = useRef<HTMLDivElement>(null);
+
+    const dragControls = useDragControls();
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -129,17 +131,25 @@ const AIGuardian = () => {
     }, []);
 
     return (
-        <div className="fixed bottom-8 right-8 z-50 pointer-events-none">
-            <div className="pointer-events-auto">
+        <div className="fixed inset-0 md:inset-auto md:bottom-8 md:right-8 z-50 pointer-events-none flex items-center justify-center md:block">
+            <div className="pointer-events-auto w-full md:w-auto flex justify-center md:block">
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
+                            drag
+                            dragListener={false}
+                            dragControls={dragControls}
+                            dragMomentum={false}
+                            whileDrag={{ scale: 1.02 }}
                             initial={{ opacity: 0, scale: 0.8, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                            className="absolute bottom-20 right-0 w-[400px] max-h-[650px] bg-primary border border-accent/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl"
+                            className="relative md:absolute md:bottom-20 md:right-0 w-[92vw] md:w-[480px] max-h-[85vh] md:max-h-[780px] bg-primary border border-accent/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
                         >
-                            <div className="p-5 bg-gradient-to-r from-primary via-navy to-primary border-b border-accent/20 flex justify-between items-center shrink-0">
+                            <div
+                                onPointerDown={(e) => dragControls.start(e)}
+                                className="p-5 bg-gradient-to-r from-primary via-navy to-primary border-b border-accent/20 flex justify-between items-center shrink-0 cursor-move"
+                            >
                                 <div className="flex items-center gap-3">
                                     <div className="w-9 h-9 bg-accent flex items-center justify-center rounded-xl shadow-[0_0_15px_rgba(197,160,40,0.3)]">
                                         <ShieldCheck className="text-primary" size={22} />

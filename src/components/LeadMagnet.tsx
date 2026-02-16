@@ -1,8 +1,6 @@
-"use client";
-
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, Phone, Mail, ChevronRight, ShieldCheck, CalendarClock, Briefcase, Clock, Sparkles } from "lucide-react";
+import { motion, AnimatePresence, useDragControls } from "framer-motion";
+import { X, User, Phone, Mail, ChevronRight, ShieldCheck, CalendarClock, Briefcase, Clock } from "lucide-react";
 
 interface LeadMagnetProps {
     isOpen: boolean;
@@ -23,25 +21,41 @@ const LeadMagnet = ({ isOpen, onClose, title = "프리미엄 자산 관리 가�
     const services = ["자산 경영 전략", "증여 · 상속", "리스크 관리", "가업 승계"];
     const times = ["평일 오전", "평일 오후", "주말/공휴일"];
 
+    const dragControls = useDragControls();
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // 실제 전송 로직 시뮬레이션
         setTimeout(() => setStep('success'), 800);
     };
 
+    const switchToAI = () => {
+        onClose();
+        setTimeout(() => window.dispatchEvent(new CustomEvent('open-ai-guardian')), 300);
+    };
+
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed top-24 right-8 z-[100] pointer-events-none">
+
+                <div className="fixed inset-0 md:inset-auto md:top-24 md:right-8 z-[100] pointer-events-none flex items-center justify-center md:block">
                     <motion.div
+                        drag
+                        dragListener={false}
+                        dragControls={dragControls}
+                        dragMomentum={false}
+                        whileDrag={{ scale: 1.02 }}
                         initial={{ opacity: 0, scale: 0.8, y: -20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.8, y: -20 }}
                         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                        className="absolute top-0 right-0 w-[400px] max-h-[650px] bg-primary border border-accent/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
+                        className="relative md:absolute md:top-0 md:right-0 w-[92vw] md:w-[480px] max-h-[85vh] md:max-h-[780px] bg-primary border border-accent/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
                     >
                         {/* Compact Redesigned Header to match AIGuardian */}
-                        <div className="p-5 bg-gradient-to-r from-primary via-navy to-primary border-b border-accent/20 flex justify-between items-center shrink-0">
+                        <div
+                            onPointerDown={(e) => dragControls.start(e)}
+                            className="p-5 bg-gradient-to-r from-primary via-navy to-primary border-b border-accent/20 flex justify-between items-center shrink-0 cursor-move"
+                        >
                             <div className="flex items-center gap-3">
                                 <div className="w-9 h-9 bg-accent flex items-center justify-center rounded-xl shadow-[0_0_15px_rgba(197,160,40,0.3)]">
                                     <CalendarClock className="text-primary" size={22} />
@@ -51,14 +65,23 @@ const LeadMagnet = ({ isOpen, onClose, title = "프리미엄 자산 관리 가�
                                     <span className="text-[9px] text-accent/70 font-black uppercase tracking-widest mt-1">Private Support</span>
                                 </div>
                             </div>
-                            <motion.button
-                                whileHover={{ scale: 1.1, rotate: 90 }}
-                                whileTap={{ scale: 0.9 }}
-                                onClick={onClose}
-                                className="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all"
-                            >
-                                <X size={18} strokeWidth={3} />
-                            </motion.button>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={switchToAI}
+                                    className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-accent hover:bg-white/10 transition-all flex items-center gap-1.5"
+                                >
+                                    <span className="hidden sm:inline">AI Guardian</span>
+                                    <ChevronRight size={12} />
+                                </button>
+                                <motion.button
+                                    whileHover={{ scale: 1.1, rotate: 90 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={onClose}
+                                    className="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all"
+                                >
+                                    <X size={18} strokeWidth={3} />
+                                </motion.button>
+                            </div>
                         </div>
 
                         <div className="p-8 md:p-10 overflow-hidden">
