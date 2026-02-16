@@ -59,7 +59,7 @@ export default function Hero() {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                        className="space-y-16"
+                        className="space-y-10 md:space-y-16 order-2 lg:order-1"
                     >
                         <div className="space-y-6">
                             <div className="flex items-center gap-6">
@@ -120,7 +120,7 @@ export default function Hero() {
                         initial={{ opacity: 0, scale: 0.95, x: 20 }}
                         animate={{ opacity: 1, scale: 1, x: 0 }}
                         transition={{ duration: 1.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                        className="relative lg:pl-12"
+                        className="relative lg:pl-12 order-1 lg:order-2 mb-12 lg:mb-0"
                     >
                         {/* Decorative Frames */}
                         <div className="absolute -top-12 -left-4 w-32 h-32 border-t-[1px] border-l-[1px] border-accent/30 rounded-tl-[4rem] -z-10" />
@@ -146,12 +146,12 @@ export default function Hero() {
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ delay: 1.5, duration: 1 }}
                             whileHover={{ y: -10, scale: 1.02 }}
-                            className="absolute -bottom-10 -left-12 glass-premium p-10 rounded-[3rem] border border-white/20 shadow-2xl max-w-[280px] backdrop-blur-xl"
+                            className="absolute -bottom-10 -right-4 lg:-left-12 glass-premium p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border border-white/20 shadow-2xl max-w-[240px] md:max-w-[280px] backdrop-blur-xl z-20"
                         >
                             <div className="flex items-center gap-4 mb-4">
-                                <Crown className="text-accent w-7 h-7" />
+                                <Crown className="text-accent w-6 h-6 md:w-7 md:h-7" />
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] font-black text-accent uppercase tracking-[0.3em]">Recognition</span>
+                                    <span className="text-[9px] md:text-[10px] font-black text-accent uppercase tracking-[0.3em] break-keep">Recognition</span>
                                     <div className="flex gap-1 text-gold-500">
                                         <Sparkles size={10} />
                                         <Sparkles size={10} />
@@ -159,8 +159,8 @@ export default function Hero() {
                                     </div>
                                 </div>
                             </div>
-                            <p className="text-base font-serif font-black text-white leading-tight tracking-tight">
-                                상위 1% MDRT 정회원 및<br />
+                            <p className="text-sm md:text-base font-serif font-black text-white leading-tight tracking-tight break-keep">
+                                상위 1% MDRT 정회원 및<br className="hidden md:block" />
                                 글로벌 종신회원
                             </p>
                         </motion.div>

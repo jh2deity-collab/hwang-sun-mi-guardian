@@ -23,8 +23,13 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
   line-height: 1.6;
+  overflow-x: hidden;
+  word-break: keep-all;
+}
+
+.break-keep {
+  word-break: keep-all;
 }
 
 html {
@@ -44,7 +49,7 @@ h3 {
 }
 
 .section-padding {
-  @apply py-24 md:py-32 lg:py-48;
+  @apply py-16 md:py-32 lg:py-48;
 }
 
 /* Redesign for Visual Balance & Sophistication */

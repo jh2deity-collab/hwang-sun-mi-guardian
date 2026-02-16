@@ -73,7 +73,7 @@ export default function LeadGen() {
                         </div>
                     </div>
 
-                    <div className="bg-white p-12 md:p-20 rounded-[4rem] shadow-2xl relative min-h-[500px] flex items-center justify-center">
+                    <div className="bg-white p-8 md:p-20 rounded-[2.5rem] md:rounded-[4rem] shadow-2xl relative min-h-[500px] flex items-center justify-center">
                         <AnimatePresence mode="wait">
                             {status === "success" ? (
                                 <motion.div

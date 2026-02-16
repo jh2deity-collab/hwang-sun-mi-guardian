@@ -46,7 +46,7 @@ const Expertise = () => {
     ];
 
     return (
-        <section id="service" className="py-32 bg-[#020617] relative overflow-hidden">
+        <section id="service" className="py-16 md:py-32 bg-[#020617] relative overflow-hidden">
             {/* Background Decorative Text */}
             <div className="absolute top-20 left-0 w-full overflow-hidden whitespace-nowrap opacity-[0.02] pointer-events-none select-none">
                 <span className="text-[15rem] font-bold leading-none tracking-tighter uppercase mr-20">

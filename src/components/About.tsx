@@ -53,14 +53,14 @@ export default function About() {
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: 0.6, duration: 1 }}
-                            className="absolute -bottom-10 -left-10 glass-premium p-10 rounded-[2.5rem] border border-white/20 shadow-2xl max-w-[300px]"
+                            className="absolute -bottom-6 -right-4 lg:-bottom-10 lg:-left-10 glass-premium p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] border border-white/20 shadow-2xl max-w-[240px] md:max-w-[300px] z-20"
                         >
                             <div className="flex items-center gap-2 mb-2">
-                                <Sparkles className="text-gold-500 w-5 h-5" />
-                                <span className="text-white/70 text-[10px] uppercase tracking-widest font-bold">Elite Status</span>
+                                <Sparkles className="text-gold-500 w-4 h-4 md:w-5 md:h-5" />
+                                <span className="text-white/70 text-[9px] md:text-[10px] uppercase tracking-widest font-bold">Elite Status</span>
                             </div>
-                            <p className="text-accent font-black text-5xl mb-3 tracking-tighter">MDRT</p>
-                            <p className="text-white text-base font-semibold leading-relaxed">
+                            <p className="text-accent font-black text-4xl md:text-5xl mb-2 md:mb-3 tracking-tighter">MDRT</p>
+                            <p className="text-white text-sm md:text-base font-semibold leading-relaxed break-keep">
                                 글로벌 수준의 정직과 전문성을 증명하는 백만 달러 원탁 회의 정회원.
                             </p>
                         </motion.div>

@@ -109,7 +109,7 @@ export default function DiagnosisQuiz() {
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
-                                    className="p-16 md:p-28 text-center space-y-12"
+                                    className="p-8 md:p-28 text-center space-y-8 md:space-y-12"
                                 >
                                     <div className="space-y-6">
                                         <div className="flex items-center justify-center gap-3">
@@ -140,7 +140,7 @@ export default function DiagnosisQuiz() {
                                     initial={{ opacity: 0, x: 20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
-                                    className="p-12 md:p-20 space-y-12"
+                                    className="p-6 md:p-20 space-y-8 md:space-y-12"
                                 >
                                     <div className="flex justify-between items-end">
                                         <p className="text-accent font-black text-[10px] tracking-widest uppercase">Question {currentIdx + 1} / {questions.length}</p>
@@ -173,7 +173,7 @@ export default function DiagnosisQuiz() {
                                     key="result"
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="p-16 md:p-24 text-center space-y-12"
+                                    className="p-8 md:p-24 text-center space-y-8 md:space-y-12"
                                 >
                                     <div className="flex justify-center">{results[answers[0] as keyof typeof results].icon}</div>
                                     <div className="space-y-4">
