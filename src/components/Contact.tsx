@@ -41,7 +41,7 @@ export default function Contact() {
                         <div className="space-y-6">
                             {[
                                 { icon: <Phone className="w-5 h-5" />, label: "Call", value: "010-8673-4589" },
-                                { icon: <Mail className="w-5 h-5" />, label: "Email", value: "hsm@miraeasset.me" },
+                                { icon: <Mail className="w-5 h-5" />, label: "Email", value: "hhssmi@nate.com" },
                                 { icon: <MessageSquareText className="w-5 h-5" />, label: "Kakao", value: "@hwang_guardian" },
                             ].map((item, idx) => (
                                 <div key={idx} className="flex items-center gap-6 group">

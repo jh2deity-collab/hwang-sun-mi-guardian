@@ -30,7 +30,7 @@ export default function Footer() {
                         <h4 className="text-accent font-bold uppercase tracking-widest text-xs">Contact</h4>
                         <ul className="space-y-4 text-sm text-white/40">
                             <li>010-8673-4589</li>
-                            <li>hsm@miraeasset.me</li>
+                            <li>hhssmi@nate.com</li>
                             <li>Seoul, Republic of Korea</li>
                         </ul>
                     </div>

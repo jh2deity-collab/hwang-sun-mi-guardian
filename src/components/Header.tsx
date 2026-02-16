@@ -78,9 +78,16 @@ export default function Header() {
                     {/* Dashboard-style Navigation */}
                     <nav className="hidden lg:flex items-center gap-2">
                         {navItems.map((item) => (
-                            <Link
+                            <button
                                 key={item.name}
-                                href={item.href}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    const element = document.querySelector(item.href);
+                                    if (element) {
+                                        element.scrollIntoView({ behavior: 'smooth' });
+                                        window.history.pushState({}, '', item.href);
+                                    }
+                                }}
                                 className="group relative px-7 py-3 overflow-hidden rounded-full transition-all"
                             >
                                 {/* Hover Image Background */}
@@ -99,7 +106,7 @@ export default function Header() {
                                         {item.name}
                                     </span>
                                 </div>
-                            </Link>
+                            </button>
                         ))}
                     </nav>
 
@@ -135,11 +142,17 @@ export default function Header() {
                     <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] pointer-events-none" />
                     <div className="space-y-8 relative z-10">
                         {navItems.map((item, idx) => (
-                            <Link
+                            <button
                                 key={item.name}
-                                href={item.href}
-                                onClick={() => setIsMenuOpen(false)}
-                                className="flex items-center justify-between group py-2"
+                                onClick={() => {
+                                    setIsMenuOpen(false);
+                                    const element = document.querySelector(item.href);
+                                    if (element) {
+                                        element.scrollIntoView({ behavior: 'smooth' });
+                                        window.history.pushState({}, '', item.href);
+                                    }
+                                }}
+                                className="flex items-center justify-between group py-2 w-full text-left"
                             >
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
@@ -156,7 +169,7 @@ export default function Header() {
                                 >
                                     <ArrowUpRight className="text-white/20 group-hover:text-accent group-hover:rotate-45 transition-all duration-500" />
                                 </motion.div>
-                            </Link>
+                            </button>
                         ))}
                         <motion.button
                             initial={{ opacity: 0, y: 20 }}
