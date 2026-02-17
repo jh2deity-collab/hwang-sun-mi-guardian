@@ -176,7 +176,7 @@ const AIGuardian = () => {
     }, []);
 
     return (
-        <div className="fixed inset-0 md:inset-auto md:bottom-8 md:right-8 z-50 pointer-events-none flex items-end justify-center md:block">
+        <div className="fixed inset-0 md:inset-auto md:bottom-8 md:right-8 z-50 pointer-events-none flex items-end justify-center md:block overflow-hidden">
             <div className="pointer-events-auto w-full md:w-auto flex justify-center md:block">
                 <AnimatePresence>
                     {isOpen && (
@@ -189,9 +189,10 @@ const AIGuardian = () => {
                             initial={{ opacity: 0, scale: 0.9, y: 50 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 50 }}
-                            className="relative md:absolute md:bottom-20 md:right-0 w-[95vw] md:w-[480px] h-[88dvh] md:h-[780px] max-h-[88dvh] md:max-h-[780px] bg-primary border border-accent/30 rounded-t-[2.5rem] md:rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
+                            className="relative md:absolute md:bottom-20 md:right-0 w-full md:w-[480px] h-[92svh] md:h-[780px] max-h-[92svh] md:max-h-[780px] bg-primary border-x-0 md:border border-t border-accent/30 rounded-t-[2.5rem] md:rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
                         >
                             <div
+                                <div
                                 onPointerDown={(e) => {
                                     if (typeof window !== 'undefined' && window.innerWidth > 768) {
                                         dragControls.start(e);
