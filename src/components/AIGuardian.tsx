@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useDragControls } from 'framer-motion';
-import { MessageSquare, X, Calculator, Send, TrendingUp, ShieldCheck, User, Mail, ArrowRight, Download } from 'lucide-react';
+import { MessageSquare, X, Calculator, Send, TrendingUp, ShieldCheck, User, Mail, ArrowRight, Download, Mic, MicOff } from 'lucide-react';
 import { calculateGiftTax, simulateAssetGrowth } from '@/lib/calculator';
 import LeadMagnet from './LeadMagnet';
 import ReportTemplate from './ReportTemplate';
@@ -30,6 +30,8 @@ const AIGuardian = () => {
     const [leadTitle, setLeadTitle] = useState("");
 
     const [isTyping, setIsTyping] = useState(false);
+    const [isListening, setIsListening] = useState(false);
+    const recognitionRef = useRef<any>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
     const reportRef = useRef<HTMLDivElement>(null);
 
@@ -124,6 +126,49 @@ const AIGuardian = () => {
         }
     };
 
+    const toggleListening = () => {
+        if (isListening) {
+            recognitionRef.current?.stop();
+            setIsListening(false);
+            return;
+        }
+
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert('이 브라우저는 음성 인식을 지원하지 않습니다. 크롬이나 사파리를 이용해주세요.');
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'ko-KR';
+        recognition.interimResults = true;
+        recognition.continuous = false;
+
+        recognition.onstart = () => setIsListening(true);
+        recognition.onend = () => setIsListening(false);
+        recognition.onresult = (event: any) => {
+            const transcript = Array.from(event.results)
+                .map((result: any) => result[0])
+                .map((result: any) => result.transcript)
+                .join('');
+            setInput(transcript);
+        };
+
+        recognition.onerror = (event: any) => {
+            console.error('Speech recognition error:', event.error);
+            setIsListening(false);
+        };
+
+        recognitionRef.current = recognition;
+        recognition.start();
+    };
+
+    useEffect(() => {
+        return () => {
+            recognitionRef.current?.stop();
+        };
+    }, []);
+
     useEffect(() => {
         const handleOpen = () => setIsOpen(true);
         window.addEventListener('open-ai-guardian', handleOpen);
@@ -215,12 +260,21 @@ const AIGuardian = () => {
                                         )}
                                     </div>
                                     <div className="p-5 pb-10 md:pb-5 border-t border-white/10 flex gap-2 bg-primary shrink-0 relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
+                                        <button
+                                            onClick={toggleListening}
+                                            className={`p-3 rounded-2xl transition-all flex items-center justify-center shrink-0 shadow-lg ${isListening
+                                                ? 'bg-red-500 text-white animate-pulse shadow-red-500/40'
+                                                : 'bg-white/5 text-white/50 hover:text-white hover:bg-white/10 border border-white/10'
+                                                }`}
+                                        >
+                                            {isListening ? <MicOff size={22} /> : <Mic size={22} />}
+                                        </button>
                                         <input
                                             type="text"
                                             value={input}
                                             onChange={(e) => setInput(e.target.value)}
                                             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                                            placeholder={isTyping ? "답변을 기다리는 중..." : "질문을 입력하세요..."}
+                                            placeholder={isListening ? "말씀해 주세요..." : (isTyping ? "답변을 기다리는 중..." : "질문을 입력하세요...")}
                                             disabled={isTyping}
                                             className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-accent disabled:opacity-50 transition-all font-medium"
                                         />
