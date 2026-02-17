@@ -392,7 +392,6 @@ const AIGuardian = () => {
                 </div>
             )}
         </div>
-        </div >
     );
 };
 
