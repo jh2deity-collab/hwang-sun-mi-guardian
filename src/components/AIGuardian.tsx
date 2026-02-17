@@ -176,28 +176,25 @@ const AIGuardian = () => {
     }, []);
 
     return (
-        <div className="fixed inset-0 md:inset-auto md:bottom-8 md:right-8 z-[100] pointer-events-none flex items-stretch md:items-end justify-center md:block overflow-hidden">
+        <div className="fixed inset-0 z-[100] pointer-events-none flex items-center justify-center md:items-end md:justify-end md:p-8 overflow-hidden">
             <div className="pointer-events-auto w-full md:w-auto flex justify-center md:block">
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
-                            drag={typeof window !== 'undefined' && window.innerWidth > 768 ? true : false}
+                            drag={isOpen}
                             dragListener={false}
                             dragControls={dragControls}
                             dragMomentum={false}
-                            whileDrag={{ scale: 1.02 }}
+                            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                            whileDrag={{ scale: 1.01, boxShadow: "0 20px 40px rgba(0,0,0,0.4)" }}
                             initial={{ opacity: 0, scale: 0.9, y: 50 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 50 }}
-                            className="relative md:absolute md:bottom-20 md:right-0 w-full md:w-[480px] h-full md:h-[780px] min-h-[100dvh] md:min-h-0 max-h-[100dvh] md:max-h-[780px] bg-primary border-0 md:border md:border-accent/30 rounded-none md:rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
+                            className="relative md:absolute w-[92vw] md:w-[480px] h-[82svh] md:h-[780px] max-h-[85dvh] md:max-h-[780px] bg-primary border border-accent/30 rounded-[2rem] md:rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
                         >
                             <div
-                                onPointerDown={(e) => {
-                                    if (typeof window !== 'undefined' && window.innerWidth > 768) {
-                                        dragControls.start(e);
-                                    }
-                                }}
-                                className="p-5 bg-gradient-to-r from-primary via-navy to-primary border-b border-accent/20 flex justify-between items-center shrink-0 cursor-default md:cursor-move"
+                                onPointerDown={(e) => dragControls.start(e)}
+                                className="p-4 md:p-5 bg-gradient-to-r from-primary via-navy to-primary border-b border-accent/20 flex justify-between items-center shrink-0 cursor-move"
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="w-9 h-9 bg-accent flex items-center justify-center rounded-xl shadow-[0_0_15px_rgba(197,160,40,0.3)]">
@@ -259,7 +256,7 @@ const AIGuardian = () => {
                                             </div>
                                         )}
                                     </div>
-                                    <div className="p-5 pb-[env(safe-area-inset-bottom,2rem)] md:pb-5 border-t border-white/10 flex gap-2 bg-primary shrink-0 relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
+                                    <div className="p-4 md:p-5 pb-[env(safe-area-inset-bottom,1.5rem)] md:pb-5 border-t border-white/10 flex gap-2 bg-primary shrink-0 relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
                                         <input
                                             type="text"
                                             value={input}
