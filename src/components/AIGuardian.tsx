@@ -181,17 +181,16 @@ const AIGuardian = () => {
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
-                            drag={isOpen}
+                            drag
                             dragListener={false}
                             dragControls={dragControls}
                             dragMomentum={false}
-                            dragConstraints={typeof window !== 'undefined' ? { left: -window.innerWidth + 400, right: window.innerWidth - 400, top: -200, bottom: window.innerHeight - 200 } : { left: 0, right: 0, top: 0, bottom: 0 }}
-                            whileDrag={{ scale: 1.02, boxShadow: "0 20px 40px rgba(0,0,0,0.4)" }}
+                            whileDrag={{ scale: 1.02 }}
                             initial={{ opacity: 0, scale: 0.8, y: -20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.8, y: -20 }}
                             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                            className="relative md:absolute md:top-0 md:right-0 w-[92vw] md:w-[480px] h-[82svh] md:h-[780px] max-h-[85dvh] md:max-h-[780px] bg-primary border border-accent/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
+                            className="relative md:absolute md:top-0 md:right-0 w-[92vw] md:w-[480px] h-[75vh] md:h-[780px] max-h-[85vh] md:max-h-[780px] bg-primary border border-accent/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
                         >
                             <div
                                 onPointerDown={(e) => dragControls.start(e)}
