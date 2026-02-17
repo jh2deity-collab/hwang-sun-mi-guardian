@@ -258,7 +258,7 @@ const AIGuardian = () => {
                                             </div>
                                         )}
                                     </div>
-                                    <div className="p-4 md:p-5 pb-[env(safe-area-inset-bottom,1.5rem)] md:pb-5 border-t border-white/10 flex gap-2 bg-primary shrink-0 relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
+                                    <div className="p-3 md:p-5 pb-[env(safe-area-inset-bottom,1.5rem)] md:pb-5 border-t border-white/10 flex gap-1.5 md:gap-2 bg-primary shrink-0 relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
                                         <input
                                             type="text"
                                             value={input}
@@ -266,11 +266,11 @@ const AIGuardian = () => {
                                             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                                             placeholder={isListening ? "말씀해 주세요..." : (isTyping ? "답변을 기다리는 중..." : "질문을 입력하세요...")}
                                             disabled={isTyping}
-                                            className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-accent disabled:opacity-50 transition-all font-medium"
+                                            className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-2xl px-3 md:px-5 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-accent disabled:opacity-50 transition-all font-medium"
                                         />
                                         <button
                                             onClick={toggleListening}
-                                            className={`p-3 rounded-2xl transition-all flex items-center justify-center shrink-0 shadow-lg ${isListening
+                                            className={`p-2.5 md:p-3 rounded-2xl transition-all flex items-center justify-center shrink-0 shadow-lg ${isListening
                                                 ? 'bg-red-500 text-white animate-pulse shadow-red-500/40'
                                                 : 'bg-white/5 text-white/50 hover:text-white hover:bg-white/10 border border-white/10'
                                                 }`}
@@ -280,7 +280,7 @@ const AIGuardian = () => {
                                         <button
                                             onClick={handleSendMessage}
                                             disabled={isTyping || !input.trim()}
-                                            className="p-3 bg-accent text-primary rounded-2xl hover:bg-accent/80 transition-all disabled:opacity-30 shadow-lg shadow-accent/20 flex items-center justify-center shrink-0"
+                                            className="p-2.5 md:p-3 bg-accent text-primary rounded-2xl hover:bg-accent/80 transition-all disabled:opacity-30 shadow-lg shadow-accent/20 flex items-center justify-center shrink-0"
                                         >
                                             <Send size={22} strokeWidth={2.5} />
                                         </button>
