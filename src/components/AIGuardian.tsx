@@ -176,7 +176,7 @@ const AIGuardian = () => {
     }, []);
 
     return (
-        <div className="fixed inset-0 md:inset-auto md:bottom-8 md:right-8 z-50 pointer-events-none flex items-end justify-center md:block overflow-hidden">
+        <div className="fixed inset-0 md:inset-auto md:bottom-8 md:right-8 z-[100] pointer-events-none flex items-stretch md:items-end justify-center md:block overflow-hidden">
             <div className="pointer-events-auto w-full md:w-auto flex justify-center md:block">
                 <AnimatePresence>
                     {isOpen && (
@@ -189,7 +189,7 @@ const AIGuardian = () => {
                             initial={{ opacity: 0, scale: 0.9, y: 50 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 50 }}
-                            className="relative md:absolute md:bottom-20 md:right-0 w-full md:w-[480px] h-[92svh] md:h-[780px] max-h-[92svh] md:max-h-[780px] bg-primary border-x-0 md:border border-t border-accent/30 rounded-t-[2.5rem] md:rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
+                            className="relative md:absolute md:bottom-20 md:right-0 w-full md:w-[480px] h-full md:h-[780px] min-h-[100dvh] md:min-h-0 max-h-[100dvh] md:max-h-[780px] bg-primary border-0 md:border md:border-accent/30 rounded-none md:rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
                         >
                             <div
                                 onPointerDown={(e) => {
@@ -259,7 +259,7 @@ const AIGuardian = () => {
                                             </div>
                                         )}
                                     </div>
-                                    <div className="p-5 pb-10 md:pb-5 border-t border-white/10 flex gap-2 bg-primary shrink-0 relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
+                                    <div className="p-5 pb-[env(safe-area-inset-bottom,2rem)] md:pb-5 border-t border-white/10 flex gap-2 bg-primary shrink-0 relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
                                         <input
                                             type="text"
                                             value={input}
