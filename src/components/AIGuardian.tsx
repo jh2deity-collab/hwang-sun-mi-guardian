@@ -260,15 +260,6 @@ const AIGuardian = () => {
                                         )}
                                     </div>
                                     <div className="p-5 pb-10 md:pb-5 border-t border-white/10 flex gap-2 bg-primary shrink-0 relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
-                                        <button
-                                            onClick={toggleListening}
-                                            className={`p-3 rounded-2xl transition-all flex items-center justify-center shrink-0 shadow-lg ${isListening
-                                                ? 'bg-red-500 text-white animate-pulse shadow-red-500/40'
-                                                : 'bg-white/5 text-white/50 hover:text-white hover:bg-white/10 border border-white/10'
-                                                }`}
-                                        >
-                                            {isListening ? <MicOff size={22} /> : <Mic size={22} />}
-                                        </button>
                                         <input
                                             type="text"
                                             value={input}
@@ -278,6 +269,15 @@ const AIGuardian = () => {
                                             disabled={isTyping}
                                             className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-accent disabled:opacity-50 transition-all font-medium"
                                         />
+                                        <button
+                                            onClick={toggleListening}
+                                            className={`p-3 rounded-2xl transition-all flex items-center justify-center shrink-0 shadow-lg ${isListening
+                                                ? 'bg-red-500 text-white animate-pulse shadow-red-500/40'
+                                                : 'bg-white/5 text-white/50 hover:text-white hover:bg-white/10 border border-white/10'
+                                                }`}
+                                        >
+                                            {isListening ? <MicOff size={22} /> : <Mic size={22} />}
+                                        </button>
                                         <button
                                             onClick={handleSendMessage}
                                             disabled={isTyping || !input.trim()}
