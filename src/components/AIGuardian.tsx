@@ -192,7 +192,6 @@ const AIGuardian = () => {
                             className="relative md:absolute md:bottom-20 md:right-0 w-full md:w-[480px] h-[92svh] md:h-[780px] max-h-[92svh] md:max-h-[780px] bg-primary border-x-0 md:border border-t border-accent/30 rounded-t-[2.5rem] md:rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
                         >
                             <div
-                                <div
                                 onPointerDown={(e) => {
                                     if (typeof window !== 'undefined' && window.innerWidth > 768) {
                                         dragControls.start(e);
