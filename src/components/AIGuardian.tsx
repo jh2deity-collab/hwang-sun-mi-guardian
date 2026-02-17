@@ -176,7 +176,7 @@ const AIGuardian = () => {
     }, []);
 
     return (
-        <div className="fixed inset-0 z-[100] pointer-events-none flex items-center justify-center md:items-end md:justify-end md:p-8 overflow-hidden">
+        <div className="fixed inset-0 md:inset-auto md:top-24 md:right-8 z-[100] pointer-events-none flex items-center justify-center md:block">
             <div className="pointer-events-auto w-full md:w-auto flex justify-center md:block">
                 <AnimatePresence>
                     {isOpen && (
