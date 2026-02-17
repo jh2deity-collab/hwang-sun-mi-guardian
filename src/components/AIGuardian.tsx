@@ -36,6 +36,7 @@ const AIGuardian = () => {
     const reportRef = useRef<HTMLDivElement>(null);
 
     const dragControls = useDragControls();
+    const windowRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -176,7 +177,7 @@ const AIGuardian = () => {
     }, []);
 
     return (
-        <div className="fixed inset-0 md:inset-auto md:top-24 md:right-8 z-[100] pointer-events-none flex items-center justify-center md:block">
+        <div ref={windowRef} className="fixed inset-0 md:inset-auto md:top-24 md:right-8 z-[100] pointer-events-none flex items-center justify-center md:block overflow-hidden">
             <div className="pointer-events-auto w-full md:w-auto flex justify-center md:block">
                 <AnimatePresence>
                     {isOpen && (
@@ -185,12 +186,13 @@ const AIGuardian = () => {
                             dragListener={false}
                             dragControls={dragControls}
                             dragMomentum={false}
-                            whileDrag={{ scale: 1.02 }}
+                            dragConstraints={windowRef}
+                            whileDrag={{ scale: 1.02, boxShadow: "0 20px 40px rgba(0,0,0,0.4)" }}
                             initial={{ opacity: 0, scale: 0.8, y: -20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.8, y: -20 }}
                             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                            className="relative md:absolute md:top-0 md:right-0 w-[92vw] md:w-[480px] h-[75vh] md:h-[780px] max-h-[85vh] md:max-h-[780px] bg-primary border border-accent/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
+                            className="relative md:absolute md:top-0 md:right-0 w-[92vw] md:w-[480px] h-auto min-h-[40vh] md:h-[780px] max-h-[85vh] md:max-h-[780px] bg-primary border border-accent/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl pointer-events-auto"
                         >
                             <div
                                 onPointerDown={(e) => dragControls.start(e)}
